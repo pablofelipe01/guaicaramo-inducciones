@@ -311,6 +311,13 @@ p {
   align-items: center;
   gap: 0.06em;
 }
+.hero-title-fade {
+  --hero-fade: 1;
+  --hero-shift: 0px;
+  opacity: var(--hero-fade);
+  transform: translateY(var(--hero-shift));
+  will-change: opacity, transform;
+}
 .hero-title em {
   font-style: italic;
   font-weight: 400;
