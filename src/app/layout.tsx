@@ -21,6 +21,12 @@ export const metadata: Metadata = {
     "Inducción y reinducción Guaicaramo · Naturaleza, comunidad y excelencia en armonía. Cinco módulos para vivir el propósito.",
 };
 
+export const viewport = {
+  width: "device-width",
+  initialScale: 1,
+  viewportFit: "cover" as const,
+};
+
 export default function RootLayout({
   children,
 }: Readonly<{
