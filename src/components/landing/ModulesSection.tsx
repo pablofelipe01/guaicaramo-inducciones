@@ -17,7 +17,7 @@ const MODULES: ModuleItem[] = [
   {
     n: "01",
     title: "Bienestar social",
-    desc: "Programas de desarrollo humano, convivencia y beneficios para ti y tu familia mientras trabajas con nosotros.",
+    desc: "Juntos impulsamos el bienestar de nuestra gente.",
     icon: "people",
     duration: "20 min",
     topics: ["Cultura Guaicaramo", "Beneficios", "Convivencia", "Línea ética"],
@@ -25,15 +25,15 @@ const MODULES: ModuleItem[] = [
   {
     n: "02",
     title: "Seguridad y salud en el trabajo",
-    desc: "Protocolos SST, identificación de peligros, EPP obligatorios y reporte de incidentes en campo y planta.",
+    desc: "Juntos construimos un entorno más seguro. ",
     icon: "shield",
     duration: "30 min",
     topics: ["EPP", "Riesgos del cargo", "Plan de emergencias", "Reportes"],
   },
   {
     n: "03",
-    title: "Gestión ambiental",
-    desc: "Compromiso con la palma sostenible, manejo de residuos, cuidado del agua y biodiversidad del Meta.",
+    title: "Sistema de gestión ambiental",
+    desc: "Juntos regeneramos el planeta, asegurando que nuestras operaciones respeten y protejan el medio ambiente.",
     icon: "leaf",
     duration: "20 min",
     topics: ["Residuos", "Agua", "Biodiversidad", "RSPO"],
@@ -41,7 +41,7 @@ const MODULES: ModuleItem[] = [
   {
     n: "04",
     title: "Gestión de calidad",
-    desc: "Estándares de producto, trazabilidad, buenas prácticas y mejora continua en cada etapa del proceso.",
+    desc: "Juntos aseguramos que nuestros productivos sean eficientes y cumplimos con los más altos estándares de calidad.",
     icon: "check",
     duration: "20 min",
     topics: ["BPM", "Trazabilidad", "Auditorías", "Mejora continua"],
@@ -99,7 +99,7 @@ function ModuleCard({ mod }: { mod: ModuleItem }) {
     <div
       onMouseEnter={() => setHover(true)}
       onMouseLeave={() => setHover(false)}
-      className={`group relative flex min-h-[420px] cursor-pointer flex-col rounded-2xl border bg-white px-8 pb-8 pt-9 transition-all duration-200 ${
+      className={`group relative flex min-h-[380px] cursor-pointer flex-col rounded-2xl border bg-white px-6 pb-7 pt-8 transition-all duration-200 sm:px-8 sm:pb-8 sm:pt-9 ${
         hover
           ? "-translate-y-1.5 border-orange shadow-[0_24px_50px_rgba(58,80,30,0.14)]"
           : "border-green-soft shadow-[0_4px_14px_rgba(58,80,30,0.06)]"
@@ -161,30 +161,31 @@ export function ModulesSection() {
   return (
     <section
       id="modulos"
-      className="relative bg-white px-6 py-24 md:px-12 md:py-28"
+      className="relative bg-white px-4 py-16 sm:px-6 md:px-12 md:py-24"
     >
       <div className="mx-auto max-w-7xl">
-        <div className="mb-16 grid items-end gap-10 lg:grid-cols-[auto_1fr] lg:gap-20">
+        <div className="mb-12 grid items-end gap-8 md:mb-16 md:gap-10 lg:grid-cols-[auto_1fr] lg:gap-20">
           <div>
-            <div className="mb-3.5 text-[12px] font-bold uppercase tracking-[3px] text-orange">
+            <div className="mb-3 text-[11px] font-bold uppercase tracking-[3px] text-orange sm:mb-3.5 sm:text-[12px]">
               Los 4 módulos
             </div>
-            <h2 className="font-serif text-4xl font-bold leading-[1.05] tracking-tight text-green-dark md:text-[56px]">
-              Todo lo que necesitas
+            <h2 className="font-serif text-3xl font-bold leading-[1.05] tracking-tight text-green-dark sm:text-4xl md:text-5xl lg:text-[56px]">
+              A continuación,
               <br />
               <span className="italic text-orange">
-                saber antes de empezar
+                conocerá cómo se vive este propósito.
               </span>
             </h2>
           </div>
-          <p className="max-w-md justify-self-start text-base leading-relaxed text-ink-soft lg:justify-self-end">
-            Cada módulo es corto, práctico y termina con una verificación de
-            aprendizaje. Debes completar los cuatro antes de ingresar a
-            operación.
+          <p className="max-w-xl text-base leading-relaxed text-ink-soft lg:max-w-md lg:justify-self-end">
+            Si está por ver este video es porque ya es parte de Guaicaramo. Y
+            lo sabe: aquí no se trata solo de un trabajo. Aquí hablamos de
+            compromiso, de impacto real, de dejar huella en cada cosa que
+            hacemos. Así es Guaicaramo.
           </p>
         </div>
 
-        <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-4">
+        <div className="grid gap-4 sm:grid-cols-2 sm:gap-5 lg:grid-cols-4">
           {MODULES.map((m) => (
             <ModuleCard key={m.n} mod={m} />
           ))}
