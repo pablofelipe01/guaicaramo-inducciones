@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 
-type IconKind = "people" | "shield" | "leaf" | "check";
+type IconKind = "play" | "people" | "shield" | "leaf" | "check";
 
 type ModuleItem = {
   n: string;
@@ -16,35 +16,68 @@ type ModuleItem = {
 const MODULES: ModuleItem[] = [
   {
     n: "01",
+    title: "Introducción",
+    desc: "Conozca el propósito de Guaicaramo y lo que significa hacer parte de esta familia.",
+    icon: "play",
+    duration: "10 min",
+    topics: [
+      "Bienvenida a Guaicaramo",
+      "Estructura administrativa",
+      "Código de ética y conducta",
+      "Protección de datos personales",
+      "SAGRILAFT",
+    ],
+  },
+  {
+    n: "02",
     title: "Bienestar social",
     desc: "Juntos impulsamos el bienestar de nuestra gente.",
     icon: "people",
     duration: "20 min",
-    topics: ["Cultura Guaicaramo", "Beneficios", "Convivencia", "Línea ética"],
+    topics: [
+      "Doña Pepa",
+      "Comunicaciones",
+      "RPQRD",
+      "Reglamento interno de trabajo",
+      "Pacto colectivo",
+    ],
   },
   {
-    n: "02",
+    n: "03",
     title: "Seguridad y salud en el trabajo",
     desc: "Juntos construimos un entorno más seguro. ",
     icon: "shield",
     duration: "30 min",
-    topics: ["EPP", "Riesgos del cargo", "Plan de emergencias", "Reportes"],
-  },
-  {
-    n: "03",
-    title: "Sistema de gestión ambiental",
-    desc: "Juntos regeneramos el planeta, asegurando que nuestras operaciones respeten y protejan el medio ambiente.",
-    icon: "leaf",
-    duration: "20 min",
-    topics: ["Residuos", "Agua", "Biodiversidad", "RSPO"],
+    topics: [
+      "Nuestros compromisos Seguridad vial",
+      "Atención médica y bienestar",
+      "Reporte de accidentes e incidentes",
+      "Comités que cuidan",
+      "Mi rol como trabajador",
+    ],
   },
   {
     n: "04",
-    title: "Gestión de calidad",
+    title: "Gestión ambiental",
+    desc: "Juntos regeneramos el planeta, asegurando que nuestras operaciones respeten y protejan el medio ambiente.",
+    icon: "leaf",
+    duration: "20 min",
+    topics: ["Gestión responsable de residuos", "Altos Valores de Conservación"],
+  },
+  {
+    n: "05",
+    title: "Sistemas Integrados de Gestión",
     desc: "Juntos aseguramos que nuestros productivos sean eficientes y cumplimos con los más altos estándares de calidad.",
     icon: "check",
     duration: "20 min",
-    topics: ["BPM", "Trazabilidad", "Auditorías", "Mejora continua"],
+    topics: [
+      "RSPO",
+      "ISSC",
+      "APSCOLOMBIA",
+      "Política integral de calidad",
+      "Certificación Global GAP",
+      "Certificación USDA Organic",
+    ],
   },
 ];
 
@@ -60,6 +93,13 @@ function ModuleIcon({ kind }: { kind: IconKind }) {
     strokeLinejoin: "round" as const,
   };
   switch (kind) {
+    case "play":
+      return (
+        <svg {...common}>
+          <circle cx="12" cy="12" r="9" />
+          <path d="M10 8.5l6 3.5-6 3.5z" fill="currentColor" stroke="none" />
+        </svg>
+      );
     case "people":
       return (
         <svg {...common}>
