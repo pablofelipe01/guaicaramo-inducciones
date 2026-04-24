@@ -1,3 +1,4 @@
+import { Header } from "@/components/landing/Header";
 import { Hero } from "@/components/landing/Hero";
 import { InduccionSection } from "@/components/landing/InduccionSection";
 import { ModulesSection } from "@/components/landing/ModulesSection";
@@ -10,6 +11,7 @@ export default function Home() {
     <>
       <RippleCursor />
       <RevealOnScroll />
+      <Header />
       <Hero />
       <InduccionSection />
       <ModulesSection />

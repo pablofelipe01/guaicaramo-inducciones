@@ -59,24 +59,24 @@ export function RippleCursor() {
       const dx = x - lastX;
       const dy = y - lastY;
       const dist = Math.hypot(dx, dy);
-      if (dist > 18 || t - lastT > 160) {
+      if (dist > 12 || t - lastT > 120) {
         ripples.push({
           x,
           y,
-          r: 2 + Math.random() * 2,
-          maxR: 18 + Math.random() * 10,
+          r: 4 + Math.random() * 3,
+          maxR: 42 + Math.random() * 28,
           life: 0,
-          ttl: 520 + Math.random() * 220,
+          ttl: 900 + Math.random() * 400,
           hue: "rgba(217,183,122,",
         });
-        if (Math.random() > 0.78) {
+        if (Math.random() > 0.5) {
           ripples.push({
-            x: x + (Math.random() - 0.5) * 6,
-            y: y + (Math.random() - 0.5) * 6,
-            r: 1.5,
-            maxR: 10 + Math.random() * 6,
+            x: x + (Math.random() - 0.5) * 10,
+            y: y + (Math.random() - 0.5) * 10,
+            r: 2,
+            maxR: 22 + Math.random() * 18,
             life: 0,
-            ttl: 420,
+            ttl: 700,
             hue: "rgba(241,234,216,",
           });
         }
@@ -84,7 +84,7 @@ export function RippleCursor() {
         lastY = y;
         lastT = t;
       }
-      if (ripples.length > 40) ripples.splice(0, ripples.length - 40);
+      if (ripples.length > 80) ripples.splice(0, ripples.length - 80);
     }
 
     window.addEventListener("mousemove", onMove, { passive: true });
@@ -106,17 +106,17 @@ export function RippleCursor() {
         }
         const ease = 1 - Math.pow(1 - p, 3);
         const radius = r.r + (r.maxR - r.r) * ease;
-        const alpha = (1 - p) * 0.4;
+        const alpha = (1 - p) * 0.55;
         ctx!.beginPath();
         ctx!.arc(r.x, r.y, radius, 0, Math.PI * 2);
         ctx!.strokeStyle = r.hue + alpha + ")";
-        ctx!.lineWidth = 1.1 * (1 - p * 0.5);
+        ctx!.lineWidth = 1.4 * (1 - p * 0.5);
         ctx!.stroke();
-        if (radius > 6) {
+        if (radius > 8) {
           ctx!.beginPath();
-          ctx!.arc(r.x, r.y, radius * 0.6, 0, Math.PI * 2);
-          ctx!.strokeStyle = r.hue + alpha * 0.45 + ")";
-          ctx!.lineWidth = 0.7;
+          ctx!.arc(r.x, r.y, radius * 0.65, 0, Math.PI * 2);
+          ctx!.strokeStyle = r.hue + alpha * 0.5 + ")";
+          ctx!.lineWidth = 0.8;
           ctx!.stroke();
         }
       }

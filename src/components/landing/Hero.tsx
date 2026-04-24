@@ -1,7 +1,6 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { Header } from "./Header";
 
 const HERO_IMAGES = [
   // Palma africana al atardecer
@@ -29,8 +28,6 @@ export function Hero() {
 
   return (
     <section className="hero" id="top">
-      <Header />
-
       <div className="hero-stage" aria-hidden="true">
         {HERO_IMAGES.map((src, i) => (
           <div

@@ -46,17 +46,6 @@ export function Header() {
           }}
         />
       </ul>
-
-      <a href="#top" className="hero-home" aria-label="Volver al inicio">
-        <Image
-          src="/favicon.ico"
-          alt=""
-          width={32}
-          height={32}
-          unoptimized
-          aria-hidden="true"
-        />
-      </a>
     </nav>
   );
 }
