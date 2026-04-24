@@ -25,28 +25,9 @@ export function Footer() {
               producción, ecosistema y excelencia, en armonía.
             </p>
           </div>
-          <div>
-            <h5>Inducción</h5>
-            <a href="#induccion">¿Qué es?</a>
-            <a href="#modulos">Módulos</a>
-            <a href="#">Certificado</a>
-          </div>
-          <div>
-            <h5>Empresa</h5>
-            <a href="#">Sobre Guaicaramo</a>
-            <a href="#">Sostenibilidad</a>
-            <a href="#">Contacto</a>
-          </div>
-          <div>
-            <h5>Legal</h5>
-            <a href="#">Política de privacidad</a>
-            <a href="#">Tratamiento de datos</a>
-            <a href="#">SAGRILAFT</a>
-          </div>
         </div>
         <div className="foot-bot">
           <span>© 2026 Guaicaramo S.A.S. Todos los derechos reservados.</span>
-          <span>Vigencia de la inducción · 2026</span>
         </div>
       </div>
     </footer>
