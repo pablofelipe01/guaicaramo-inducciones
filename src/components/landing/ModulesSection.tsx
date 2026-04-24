@@ -1,236 +1,446 @@
-"use client";
+import type { ComponentType } from "react";
 
-import { useState } from "react";
+/* --------------------- per-module SVG animations --------------------- */
 
-type IconKind = "play" | "people" | "shield" | "leaf" | "check";
+function AnimIntro() {
+  return (
+    <svg
+      viewBox="0 0 240 240"
+      className="mcard-anim-svg"
+      style={{ width: "58%", height: "58%", opacity: 0.95 }}
+    >
+      <defs>
+        <radialGradient id="iGlow" cx="50%" cy="50%" r="50%">
+          <stop offset="0%" stopColor="#d9b77a" stopOpacity="0.55" />
+          <stop offset="100%" stopColor="#d9b77a" stopOpacity="0" />
+        </radialGradient>
+      </defs>
+      <circle cx="120" cy="120" r="90" fill="url(#iGlow)" />
+      <g fill="none" stroke="#f1ead8" strokeWidth="1" opacity="0.4">
+        <circle cx="120" cy="120" r="70">
+          <animate
+            attributeName="r"
+            values="66;74;66"
+            dur="6s"
+            repeatCount="indefinite"
+          />
+        </circle>
+        <circle cx="120" cy="120" r="54" strokeDasharray="3 6" />
+      </g>
+      {[0, 1, 2, 3, 4, 5].map((i) => {
+        const a = (i / 6) * Math.PI * 2 - Math.PI / 2;
+        const x = 120 + Math.cos(a) * 70;
+        const y = 120 + Math.sin(a) * 70;
+        return (
+          <circle key={i} cx={x} cy={y} r="6" fill="#d9b77a">
+            <animate
+              attributeName="r"
+              values="4;7;4"
+              dur={`${3 + i * 0.3}s`}
+              repeatCount="indefinite"
+              begin={`${i * 0.2}s`}
+            />
+          </circle>
+        );
+      })}
+      <circle cx="120" cy="120" r="10" fill="#f1ead8" />
+      <text
+        x="120"
+        y="125"
+        textAnchor="middle"
+        fontFamily="var(--font-display), serif"
+        fontStyle="italic"
+        fontSize="16"
+        fill="#0c1f15"
+      >
+        G
+      </text>
+    </svg>
+  );
+}
 
-type ModuleItem = {
-  n: string;
+function AnimBienestar() {
+  return (
+    <svg
+      viewBox="0 0 240 240"
+      className="mcard-anim-svg"
+      style={{ width: "60%", height: "60%" }}
+    >
+      <g fill="none" stroke="#f1ead8" strokeWidth="1.2" opacity="0.9">
+        {[0, 1, 2].map((i) => (
+          <circle
+            key={i}
+            cx="120"
+            cy="120"
+            r={36 + i * 24}
+            opacity={0.3 - i * 0.08}
+          >
+            <animate
+              attributeName="r"
+              values={`${36 + i * 24};${42 + i * 24};${36 + i * 24}`}
+              dur={`${4 + i}s`}
+              repeatCount="indefinite"
+            />
+          </circle>
+        ))}
+      </g>
+      {[0, 1, 2, 3, 4].map((i) => {
+        const a = (i / 5) * Math.PI * 2 - Math.PI / 2;
+        const x = 120 + Math.cos(a) * 82;
+        const y = 120 + Math.sin(a) * 82;
+        return (
+          <g key={i} opacity="0.92">
+            <circle cx={x} cy={y - 6} r="7" fill="#d9b77a" />
+            <path
+              d={`M ${x - 10} ${y + 14} Q ${x} ${y + 4} ${x + 10} ${y + 14} L ${x + 9} ${y + 22} L ${x - 9} ${y + 22} Z`}
+              fill="#f1ead8"
+            >
+              <animateTransform
+                attributeName="transform"
+                type="translate"
+                values="0 0; 0 -2; 0 0"
+                dur={`${3 + i * 0.4}s`}
+                repeatCount="indefinite"
+              />
+            </path>
+          </g>
+        );
+      })}
+      <circle cx="120" cy="120" r="14" fill="#f1ead8" />
+      <path
+        d="M 110 120 L 118 128 L 132 112"
+        fill="none"
+        stroke="#2a5a38"
+        strokeWidth="2.4"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+      />
+    </svg>
+  );
+}
+
+function AnimSeguridad() {
+  return (
+    <svg
+      viewBox="0 0 240 240"
+      className="mcard-anim-svg"
+      style={{ width: "52%", height: "52%" }}
+    >
+      <path
+        d="M 120 40 L 186 66 L 186 130 C 186 168 160 194 120 208 C 80 194 54 168 54 130 L 54 66 Z"
+        fill="none"
+        stroke="#f1ead8"
+        strokeWidth="1.6"
+        opacity="0.35"
+      >
+        <animate
+          attributeName="opacity"
+          values="0.2;0.5;0.2"
+          dur="3.5s"
+          repeatCount="indefinite"
+        />
+      </path>
+      <path
+        d="M 120 56 L 172 76 L 172 128 C 172 160 152 182 120 194 C 88 182 68 160 68 128 L 68 76 Z"
+        fill="#d9b77a"
+        fillOpacity="0.18"
+        stroke="#d9b77a"
+        strokeWidth="1.4"
+      />
+      <rect x="110" y="100" width="20" height="52" rx="2" fill="#f1ead8">
+        <animate
+          attributeName="y"
+          values="100;96;100"
+          dur="2.4s"
+          repeatCount="indefinite"
+        />
+      </rect>
+      <rect x="94" y="116" width="52" height="20" rx="2" fill="#f1ead8">
+        <animate
+          attributeName="x"
+          values="94;90;94"
+          dur="2.4s"
+          repeatCount="indefinite"
+        />
+      </rect>
+      <path
+        d="M 80 200 L 98 200 L 104 186 L 112 214 L 122 192 L 130 200 L 160 200"
+        fill="none"
+        stroke="#d9b77a"
+        strokeWidth="2"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+        opacity="0.85"
+      >
+        <animate
+          attributeName="stroke-dasharray"
+          values="0 200;200 0"
+          dur="2.8s"
+          repeatCount="indefinite"
+        />
+      </path>
+    </svg>
+  );
+}
+
+function AnimAmbiental() {
+  return (
+    <svg
+      viewBox="0 0 240 240"
+      className="mcard-anim-svg"
+      style={{ width: "56%", height: "56%" }}
+    >
+      <path
+        d="M 120 200 Q 118 160 120 120"
+        fill="none"
+        stroke="#f1ead8"
+        strokeWidth="2"
+        strokeLinecap="round"
+        opacity="0.7"
+      />
+      <path
+        d="M 120 130 C 90 120 70 90 80 56 C 114 54 140 80 138 120 C 134 128 128 130 120 130 Z"
+        fill="#d9b77a"
+        fillOpacity="0.35"
+        stroke="#f1ead8"
+        strokeWidth="1.4"
+      >
+        <animateTransform
+          attributeName="transform"
+          type="rotate"
+          values="-2 120 130; 2 120 130; -2 120 130"
+          dur="5s"
+          repeatCount="indefinite"
+        />
+      </path>
+      <path
+        d="M 120 130 Q 105 100 90 78"
+        fill="none"
+        stroke="#f1ead8"
+        strokeWidth="1"
+        opacity="0.5"
+      />
+      <path
+        d="M 120 170 C 140 164 156 148 156 126 C 138 126 124 140 122 166 Z"
+        fill="#f1ead8"
+        fillOpacity="0.3"
+        stroke="#f1ead8"
+        strokeWidth="1.2"
+      />
+      {[0, 1, 2].map((i) => (
+        <circle
+          key={i}
+          cx={60 + i * 60}
+          cy="30"
+          r="3"
+          fill="#f1ead8"
+          opacity="0.8"
+        >
+          <animate
+            attributeName="cy"
+            values={`20;${180 + i * 10};20`}
+            dur={`${3 + i * 0.8}s`}
+            repeatCount="indefinite"
+            begin={`${i * 0.6}s`}
+          />
+          <animate
+            attributeName="opacity"
+            values="0;0.9;0"
+            dur={`${3 + i * 0.8}s`}
+            repeatCount="indefinite"
+            begin={`${i * 0.6}s`}
+          />
+        </circle>
+      ))}
+    </svg>
+  );
+}
+
+function AnimSistemas() {
+  return (
+    <svg
+      viewBox="0 0 240 240"
+      className="mcard-anim-svg"
+      style={{ width: "58%", height: "58%" }}
+    >
+      <g transform="translate(120 120)">
+        {[0, 1, 2].map((i) => {
+          const r = 40 + i * 22;
+          const pts = Array.from({ length: 6 })
+            .map((_, k) => {
+              const a = (k / 6) * Math.PI * 2 - Math.PI / 2;
+              return `${Math.cos(a) * r},${Math.sin(a) * r}`;
+            })
+            .join(" ");
+          return (
+            <polygon
+              key={i}
+              points={pts}
+              fill="none"
+              stroke="#f1ead8"
+              strokeWidth="1.2"
+              opacity={0.5 - i * 0.12}
+            >
+              <animateTransform
+                attributeName="transform"
+                type="rotate"
+                from={i % 2 ? "0" : "60"}
+                to={i % 2 ? "60" : "0"}
+                dur={`${8 + i * 2}s`}
+                repeatCount="indefinite"
+              />
+            </polygon>
+          );
+        })}
+        <circle r="22" fill="#d9b77a" fillOpacity="0.85" />
+        <path
+          d="M -8 0 L -2 6 L 9 -6"
+          fill="none"
+          stroke="#0c1f15"
+          strokeWidth="2.4"
+          strokeLinecap="round"
+          strokeLinejoin="round"
+        />
+      </g>
+      {[0, 1, 2, 3, 4, 5].map((i) => {
+        const a = (i / 6) * Math.PI * 2 - Math.PI / 2;
+        const x = 120 + Math.cos(a) * 96;
+        const y = 120 + Math.sin(a) * 96;
+        return (
+          <circle key={i} cx={x} cy={y} r="3" fill="#f1ead8" opacity="0.7">
+            <animate
+              attributeName="opacity"
+              values="0.2;1;0.2"
+              dur={`${2 + i * 0.3}s`}
+              repeatCount="indefinite"
+              begin={`${i * 0.25}s`}
+            />
+          </circle>
+        );
+      })}
+    </svg>
+  );
+}
+
+/* --------------------- module data --------------------- */
+
+type Module = {
+  num: string;
   title: string;
-  desc: string;
-  icon: IconKind;
   duration: string;
-  topics: string[];
+  chip: string;
+  Anim: ComponentType;
+  bg: string;
+  span: 4 | 6;
 };
 
-const MODULES: ModuleItem[] = [
+const MODULES: Module[] = [
   {
-    n: "01",
+    num: "01",
     title: "Introducción",
-    desc: "Conozca el propósito de Guaicaramo y lo que significa hacer parte de esta familia.",
-    icon: "play",
     duration: "10 min",
-    topics: [
-      "Bienvenida a Guaicaramo",
-      "Estructura administrativa",
-      "Código de ética y conducta",
-      "Protección de datos personales",
-      "SAGRILAFT",
-    ],
+    chip: "Propósito",
+    Anim: AnimIntro,
+    bg: "https://images.unsplash.com/photo-1464822759023-fed622ff2c3b?auto=format&fit=crop&w=1600&q=80",
+    span: 6,
   },
   {
-    n: "02",
+    num: "02",
     title: "Bienestar social",
-    desc: "Juntos impulsamos el bienestar de nuestra gente.",
-    icon: "people",
     duration: "20 min",
-    topics: [
-      "Doña Pepa",
-      "Comunicaciones",
-      "RPQRD",
-      "Reglamento interno de trabajo",
-      "Pacto colectivo",
-    ],
+    chip: "Comunidad",
+    Anim: AnimBienestar,
+    bg: "https://images.unsplash.com/photo-1529333166437-7750a6dd5a70?auto=format&fit=crop&w=1600&q=80",
+    span: 6,
   },
   {
-    n: "03",
-    title: "Seguridad y salud en el trabajo",
-    desc: "Juntos construimos un entorno más seguro. ",
-    icon: "shield",
+    num: "03",
+    title: "Seguridad y salud",
     duration: "30 min",
-    topics: [
-      "Nuestros compromisos Seguridad vial",
-      "Atención médica y bienestar",
-      "Reporte de accidentes e incidentes",
-      "Comités que cuidan",
-      "Mi rol como trabajador",
-    ],
+    chip: "Cuidado",
+    Anim: AnimSeguridad,
+    bg: "https://images.unsplash.com/photo-1504307651254-35680f356dfd?auto=format&fit=crop&w=1600&q=80",
+    span: 4,
   },
   {
-    n: "04",
+    num: "04",
     title: "Gestión ambiental",
-    desc: "Juntos regeneramos el planeta, asegurando que nuestras operaciones respeten y protejan el medio ambiente.",
-    icon: "leaf",
     duration: "20 min",
-    topics: ["Gestión responsable de residuos", "Altos Valores de Conservación"],
+    chip: "Ecosistema",
+    Anim: AnimAmbiental,
+    bg: "https://images.unsplash.com/photo-1470071459604-3b5ec3a7fe05?auto=format&fit=crop&w=1600&q=80",
+    span: 4,
   },
   {
-    n: "05",
+    num: "05",
     title: "Sistemas Integrados de Gestión",
-    desc: "Juntos aseguramos que nuestros productivos sean eficientes y cumplimos con los más altos estándares de calidad.",
-    icon: "check",
     duration: "20 min",
-    topics: [
-      "RSPO",
-      "ISSC",
-      "APSCOLOMBIA",
-      "Política integral de calidad",
-      "Certificación Global GAP",
-      "Certificación USDA Organic",
-    ],
+    chip: "Excelencia",
+    Anim: AnimSistemas,
+    bg: "https://images.unsplash.com/photo-1625246333195-78d9c38ad449?auto=format&fit=crop&w=1600&q=80",
+    span: 4,
   },
 ];
 
-function ModuleIcon({ kind }: { kind: IconKind }) {
-  const common = {
-    width: 32,
-    height: 32,
-    viewBox: "0 0 24 24",
-    fill: "none",
-    stroke: "currentColor",
-    strokeWidth: 1.8,
-    strokeLinecap: "round" as const,
-    strokeLinejoin: "round" as const,
-  };
-  switch (kind) {
-    case "play":
-      return (
-        <svg {...common}>
-          <circle cx="12" cy="12" r="9" />
-          <path d="M10 8.5l6 3.5-6 3.5z" fill="currentColor" stroke="none" />
-        </svg>
-      );
-    case "people":
-      return (
-        <svg {...common}>
-          <circle cx="9" cy="8" r="3.2" />
-          <circle cx="16" cy="9" r="2.5" />
-          <path d="M3 20c0-3.3 2.7-6 6-6s6 2.7 6 6" />
-          <path d="M14 20c0-2.5 1.8-4.5 4-4.5s4 2 4 4.5" />
-        </svg>
-      );
-    case "shield":
-      return (
-        <svg {...common}>
-          <path d="M12 3l8 3v6c0 5-3.5 8.5-8 9-4.5-.5-8-4-8-9V6l8-3z" />
-          <path d="M9 12l2.2 2.2L15 10.5" />
-        </svg>
-      );
-    case "leaf":
-      return (
-        <svg {...common}>
-          <path d="M5 20c0-8 6-14 15-14 0 9-6 15-14 15-.3-.4-.7-.7-1-1z" />
-          <path d="M5 20c3-3 6-6 10-8" />
-        </svg>
-      );
-    case "check":
-      return (
-        <svg {...common}>
-          <circle cx="12" cy="12" r="9" />
-          <path d="M8 12l3 3 6-6" />
-        </svg>
-      );
-  }
-}
-
-function ModuleCard({ mod }: { mod: ModuleItem }) {
-  const [hover, setHover] = useState(false);
+function ModuleCard({ m }: { m: Module }) {
+  const { Anim } = m;
   return (
-    <div
-      onMouseEnter={() => setHover(true)}
-      onMouseLeave={() => setHover(false)}
-      className={`group relative flex min-h-[380px] cursor-pointer flex-col rounded-2xl border bg-white px-6 pb-7 pt-8 transition-all duration-200 sm:px-8 sm:pb-8 sm:pt-9 ${
-        hover
-          ? "-translate-y-1.5 border-orange shadow-[0_24px_50px_rgba(58,80,30,0.14)]"
-          : "border-green-soft shadow-[0_4px_14px_rgba(58,80,30,0.06)]"
-      }`}
-    >
-      <div className="mb-7 flex items-start justify-between">
-        <div
-          className={`font-serif text-[48px] font-bold leading-none transition-colors ${
-            hover ? "text-orange" : "text-green-soft-2"
-          }`}
-        >
-          {mod.n}
-        </div>
-        <div
-          className={`flex h-14 w-14 items-center justify-center rounded-full transition-colors ${
-            hover ? "bg-orange text-white" : "bg-cream-dark text-green"
-          }`}
-        >
-          <ModuleIcon kind={mod.icon} />
-        </div>
+    <article className={`mcard span-${m.span}`}>
+      <div
+        className="mcard-bg"
+        style={{ backgroundImage: `url(${m.bg})` }}
+        aria-hidden="true"
+      />
+      <div className="mcard-scrim" aria-hidden="true" />
+      <div className="mcard-anim" aria-hidden="true">
+        <Anim />
       </div>
-
-      <h3 className="mb-3.5 font-serif text-[26px] font-bold leading-tight text-green-dark text-balance">
-        {mod.title}
-      </h3>
-
-      <p className="mb-5 text-[14.5px] leading-relaxed text-ink-soft">
-        {mod.desc}
-      </p>
-
-      <div className="mb-6 flex flex-wrap gap-1.5">
-        {mod.topics.map((t) => (
-          <span
-            key={t}
-            className="rounded-full bg-cream-dark px-2.5 py-1 text-[11px] font-medium tracking-[0.2px] text-green"
-          >
-            {t}
+      <div className="mcard-content">
+        <div className="mcard-top">
+          <span className="mcard-num">{m.num}</span>
+          <span className="mcard-dur">⏱ {m.duration}</span>
+        </div>
+        <div>
+          <div className="chip" style={{ marginBottom: 12 }}>
+            {m.chip}
+          </div>
+          <h3 className="mcard-title">{m.title}</h3>
+          <span className="mcard-cta">
+            Iniciar módulo <span className="arr" />
           </span>
-        ))}
+        </div>
       </div>
-
-      <div className="mt-auto flex items-center justify-between border-t border-dashed border-green-soft pt-4.5">
-        <span className="text-[12px] tracking-wide text-ink-muted">
-          ⏱ {mod.duration}
-        </span>
-        <span
-          className={`flex items-center gap-1.5 text-[13px] font-semibold text-orange transition-transform ${
-            hover ? "translate-x-1" : ""
-          }`}
-        >
-          Iniciar módulo →
-        </span>
-      </div>
-    </div>
+    </article>
   );
 }
 
 export function ModulesSection() {
   return (
-    <section
-      id="modulos"
-      className="relative bg-white px-4 py-16 sm:px-6 md:px-12 md:py-24"
-    >
-      <div className="mx-auto max-w-7xl">
-        <div className="mb-12 grid items-end gap-8 md:mb-16 md:gap-10 lg:grid-cols-[auto_1fr] lg:gap-20">
+    <section className="section dark" id="modulos">
+      <div className="wrap">
+        <div className="section-head">
           <div>
-            <div className="mb-3 text-[11px] font-bold uppercase tracking-[3px] text-orange sm:mb-3.5 sm:text-[12px]">
-              Los 4 módulos
+            <div className="eyebrow on-dark" style={{ marginBottom: 18 }}>
+              Los módulos
             </div>
-            <h2 className="font-serif text-3xl font-bold leading-[1.05] tracking-tight text-green-dark sm:text-4xl md:text-5xl lg:text-[56px]">
-              A continuación,
-              <br />
-              <span className="italic text-orange">
-                conocerá cómo se vive este propósito.
-              </span>
+            <h2 className="title">
+              Cinco pasos para vivir <em>el propósito</em>.
             </h2>
           </div>
-          <p className="max-w-xl text-base leading-relaxed text-ink-soft lg:max-w-md lg:justify-self-end">
-            Si está por ver este video es porque ya es parte de Guaicaramo. Y
-            lo sabe: aquí no se trata solo de un trabajo. Aquí hablamos de
-            compromiso, de impacto real, de dejar huella en cada cosa que
-            hacemos. Así es Guaicaramo.
-          </p>
+          <div className="meta">
+            5 módulos · ~90 min
+            <br />
+            Vigencia 2026
+          </div>
         </div>
 
-        <div className="grid gap-4 sm:grid-cols-2 sm:gap-5 lg:grid-cols-4">
+        <div className="modules-grid">
           {MODULES.map((m) => (
-            <ModuleCard key={m.n} mod={m} />
+            <ModuleCard key={m.num} m={m} />
           ))}
         </div>
       </div>
     </section>
   );
 }
+
