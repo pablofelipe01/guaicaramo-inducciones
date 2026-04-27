@@ -1226,6 +1226,15 @@ a.mcard {
   padding: 12px 14px;
   font-size: 13.5px;
 }
+.sign-error-strong {
+  padding: 16px 18px;
+  font-size: 14.5px;
+  line-height: 1.5;
+}
+.sign-error-strong em {
+  font-style: italic;
+  font-weight: 600;
+}
 .sign-field {
   display: flex;
   flex-direction: column;

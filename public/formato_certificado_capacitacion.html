@@ -1,0 +1,327 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<title>Certificado – Guaicaramo S.A.S.</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Playfair+Display:ital,wght@0,700;1,500&display=swap" rel="stylesheet">
+<style>
+*{margin:0;padding:0;box-sizing:border-box;}
+body{background:#cfd4d8;font-family:'Inter',sans-serif;display:flex;flex-direction:column;align-items:center;padding:28px;gap:22px;}
+
+/* Controls */
+.controls{background:#fff;border:1px solid #ddd;border-radius:8px;padding:18px 22px;width:100%;max-width:980px;}
+.controls h3{font-size:10px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:#999;margin-bottom:12px;}
+.fields{display:grid;grid-template-columns:1fr 1fr;gap:9px 16px;}
+.field{display:flex;flex-direction:column;gap:3px;}
+.field.full{grid-column:1/-1;}
+label{font-size:10px;color:#aaa;text-transform:uppercase;letter-spacing:.07em;}
+input,textarea{border:1px solid #ddd;border-radius:5px;padding:6px 9px;font-size:12.5px;font-family:'Inter',sans-serif;color:#222;outline:none;resize:vertical;}
+input:focus,textarea:focus{border-color:#2e7d32;}
+.btn-row{display:flex;gap:10px;margin-top:12px;}
+button{padding:8px 20px;border-radius:5px;font-size:11px;font-family:'Inter',sans-serif;font-weight:600;letter-spacing:.04em;cursor:pointer;border:1px solid;}
+.btn-print{background:#2e7d32;color:#fff;border-color:#2e7d32;}
+.btn-print:hover{background:#1b5e20;}
+.btn-reset{background:#fff;color:#777;border-color:#ccc;}
+
+/* ── Certificate ── */
+.cert-wrap{width:980px;}
+.certificate{
+  width:980px;
+  padding:14px;
+  background:#2e7d32; /* outer green frame */
+  position:relative;
+}
+
+/* Inner white card */
+.cert-inner{
+  background:#fff;
+  position:relative;
+  overflow:hidden;
+  padding:0;
+}
+
+/* Top chevron band */
+.chevron-band{
+  background:#2e7d32;
+  height:46px;
+  position:relative;
+  overflow:hidden;
+  display:flex;align-items:center;
+  padding:0 32px;
+  justify-content:flex-end;
+}
+.chevron-band::before{
+  content:'';
+  position:absolute;left:0;top:0;right:0;bottom:0;
+  background:repeating-linear-gradient(
+    90deg,
+    transparent,transparent 18px,
+    rgba(255,255,255,0.13) 18px,rgba(255,255,255,0.13) 36px
+  );
+  clip-path:polygon(
+    0 0,100% 0,100% 100%,
+    96% 0,93% 100%,
+    89% 0,86% 100%,
+    82% 0,79% 100%,
+    75% 0,72% 100%,
+    68% 0,65% 100%,
+    61% 0,58% 100%,
+    54% 0,51% 100%,
+    47% 0,44% 100%,
+    40% 0,37% 100%,
+    0 100%
+  );
+}
+/* Actual visible chevrons */
+.chevrons{
+  position:absolute;right:0;top:0;bottom:0;
+  display:flex;align-items:center;gap:0;
+  padding-right:8px;
+}
+.chev-item{
+  width:0;height:0;
+  border-top:23px solid transparent;
+  border-bottom:23px solid transparent;
+  border-left:18px solid rgba(255,255,255,0.22);
+  margin-left:3px;
+}
+
+/* Bottom chevron band */
+.chevron-band-bottom{
+  background:#2e7d32;
+  height:46px;
+  position:relative;
+  overflow:hidden;
+  display:flex;align-items:center;
+  padding:0 32px;
+}
+.chevrons-bottom{
+  position:absolute;left:0;top:0;bottom:0;
+  display:flex;align-items:center;gap:0;
+  padding-left:8px;
+}
+.chev-item-l{
+  width:0;height:0;
+  border-top:23px solid transparent;
+  border-bottom:23px solid transparent;
+  border-right:18px solid rgba(255,255,255,0.22);
+  margin-right:3px;
+}
+
+/* Orange accent line */
+.orange-line{height:5px;background:linear-gradient(to right,#e65100,#ff8f00,#e65100);}
+
+/* Content padding */
+.cert-content{padding:28px 60px 24px;}
+
+/* Empresa */
+.cert-empresa{font-size:13px;font-weight:700;letter-spacing:.2em;text-transform:uppercase;color:#2e7d32;text-align:center;margin-bottom:2px;}
+
+/* Main title */
+.cert-title{
+  font-family:'Playfair Display',serif;
+  font-size:38px;font-weight:700;
+  color:#1b5e20;text-align:center;
+  letter-spacing:.01em;line-height:1.05;
+  margin-bottom:18px;
+}
+
+/* Watermark circle */
+.cert-content{position:relative;}
+.watermark{
+  position:absolute;top:50%;left:50%;
+  transform:translate(-50%,-50%);
+  width:260px;height:260px;border-radius:50%;
+  border:1px solid rgba(46,125,50,0.07);
+  box-shadow:0 0 0 30px rgba(46,125,50,0.03),0 0 0 60px rgba(46,125,50,0.02);
+  pointer-events:none;
+  display:flex;align-items:center;justify-content:center;
+}
+.watermark-text{
+  font-family:'Playfair Display',serif;
+  font-size:96px;font-weight:700;
+  color:rgba(46,125,50,0.05);
+  line-height:1;
+  user-select:none;
+}
+
+/* Constar */
+.constar{font-size:11.5px;color:#888;text-align:center;margin-bottom:6px;letter-spacing:.04em;}
+
+/* Name */
+.cert-name{
+  font-family:'Playfair Display',serif;
+  font-size:46px;font-style:italic;font-weight:500;
+  color:#1b5e20;text-align:center;
+  line-height:1.1;margin-bottom:4px;
+}
+.cert-cedula{font-size:11px;color:#aaa;text-align:center;margin-bottom:16px;letter-spacing:.04em;}
+
+.cert-body-text{
+  font-size:13px;color:#555;line-height:1.9;
+  text-align:center;
+  margin:0 auto 20px;
+  max-width:680px;
+}
+
+/* Divider */
+.h-rule{display:flex;align-items:center;gap:10px;margin-bottom:16px;}
+.h-rule span{flex:1;height:1px;background:#e8e8e8;}
+.h-rule i{width:7px;height:7px;border-radius:50%;background:#e65100;flex-shrink:0;display:block;}
+
+/* Date + footer line */
+.bottom-info{
+  display:flex;align-items:center;justify-content:space-between;
+  font-size:10px;color:#bbb;letter-spacing:.06em;
+  border-top:1px solid #eee;padding-top:10px;margin-top:4px;
+}
+.date-val{color:#2e7d32;font-weight:700;font-size:11px;}
+
+/* Signatures */
+.sig-row{display:flex;justify-content:space-between;width:100%;gap:20px;margin-bottom:18px;}
+.sig-block{display:flex;flex-direction:column;align-items:center;flex:1;gap:4px;}
+.sig-space{height:50px;}
+.sig-line{width:80%;max-width:170px;height:1px;background:#999;}
+.sig-name{font-size:11.5px;font-weight:700;color:#1b5e20;text-align:center;}
+.sig-role{font-size:9.5px;color:#bbb;text-transform:uppercase;letter-spacing:.08em;text-align:center;}
+
+@media print{
+  body{background:#fff;padding:0;}
+  .controls{display:none;}
+  .cert-wrap,.certificate{width:100%;}
+  .chevron-band,.chevron-band-bottom,.orange-line,.certificate{
+    -webkit-print-color-adjust:exact;print-color-adjust:exact;
+  }
+  @page{size:landscape;margin:8mm;}
+}
+</style>
+</head>
+<body>
+
+<!-- Controls -->
+<div class="controls">
+  <h3>Datos del certificado</h3>
+  <div class="fields">
+    <div class="field full">
+      <label>Texto central (mensaje + temas + fecha)</label>
+      <textarea id="f-cuerpo" rows="5"></textarea>
+    </div>
+    <div class="field"><label>Firma 1 – Nombre</label><input id="f-f1n" type="text" placeholder="Nombre firmante 1"></div>
+    <div class="field"><label>Firma 2 – Nombre</label><input id="f-f2n" type="text" placeholder="Nombre firmante 2"></div>
+  </div>
+  <div class="btn-row">
+    <button class="btn-print" onclick="window.print()">Imprimir / Guardar PDF</button>
+    <button class="btn-reset" onclick="resetForm()">Limpiar</button>
+  </div>
+</div>
+
+<!-- Certificate -->
+<div class="cert-wrap">
+<div class="certificate">
+<div class="cert-inner">
+
+  <!-- Top chevron band -->
+  <div class="chevron-band">
+    <div class="chevrons">
+      <div class="chev-item"></div><div class="chev-item"></div>
+      <div class="chev-item"></div><div class="chev-item"></div>
+      <div class="chev-item"></div><div class="chev-item"></div>
+      <div class="chev-item"></div><div class="chev-item"></div>
+      <div class="chev-item"></div><div class="chev-item"></div>
+      <div class="chev-item"></div><div class="chev-item"></div>
+      <div class="chev-item"></div><div class="chev-item"></div>
+      <div class="chev-item"></div><div class="chev-item"></div>
+    </div>
+  </div>
+  <div class="orange-line"></div>
+
+  <!-- Main content -->
+  <div class="cert-content">
+    <div class="watermark"><div class="watermark-text">G</div></div>
+
+    <div class="cert-empresa">Guaicaramo S.A.S.</div>
+    <div class="constar">Se hace constar que</div>
+    <div class="cert-title">Certificado de Inducción / Reinducción</div>
+    <div class="cert-name" id="c-nombre">Nombre del Participante</div>
+    <div class="cert-cedula">C.C. <span id="c-cedula">0.000.000.000</span></div>
+
+    <div class="cert-body-text" id="c-cuerpo">Completó con éxito el proceso de Inducción / Reinducción en los siguientes temas: Reglamento Interno de Trabajo, Política de Seguridad y Salud en el Trabajo, Manejo de Residuos Sólidos, Política de Calidad, entre otros. Fecha de emisión: <span id="c-fecha-inline">—</span></div>
+
+    <div class="h-rule"><span></span><i></i><span></span></div>
+
+    <div class="sig-row">
+      <div class="sig-block">
+        <div class="sig-space"></div>
+        <div class="sig-line"></div>
+        <div class="sig-name" id="c-f1n">Firmante 1</div>
+      </div>
+      <div class="sig-block">
+        <div class="sig-space"></div>
+        <div class="sig-line"></div>
+        <div class="sig-name" id="c-f2n">Firmante 2</div>
+      </div>
+    </div>
+
+    <div class="bottom-info">
+      <span>Guaicaramo S.A.S. &nbsp;·&nbsp; Gestión Humana</span>
+      <span>Fecha de emisión: <span class="date-val" id="c-fecha">—</span></span>
+    </div>
+  </div>
+
+  <!-- Orange line -->
+  <div class="orange-line"></div>
+  <!-- Bottom chevron band -->
+  <div class="chevron-band-bottom">
+    <div class="chevrons-bottom">
+      <div class="chev-item-l"></div><div class="chev-item-l"></div>
+      <div class="chev-item-l"></div><div class="chev-item-l"></div>
+      <div class="chev-item-l"></div><div class="chev-item-l"></div>
+      <div class="chev-item-l"></div><div class="chev-item-l"></div>
+      <div class="chev-item-l"></div><div class="chev-item-l"></div>
+      <div class="chev-item-l"></div><div class="chev-item-l"></div>
+      <div class="chev-item-l"></div><div class="chev-item-l"></div>
+      <div class="chev-item-l"></div><div class="chev-item-l"></div>
+    </div>
+  </div>
+
+</div>
+</div>
+</div>
+
+<script>
+const months=['enero','febrero','marzo','abril','mayo','junio','julio','agosto','septiembre','octubre','noviembre','diciembre'];
+const numLetras=['','uno','dos','tres','cuatro','cinco','seis','siete','ocho','nueve','diez','once','doce','trece','catorce','quince','dieciséis','diecisiete','dieciocho','diecinueve','veinte','veintiuno','veintidós','veintitrés','veinticuatro','veinticinco','veintiséis','veintisiete','veintiocho','veintinueve','treinta','treinta y uno'];
+const today=new Date();
+const d=today.getDate(), mo=today.getMonth(), y=today.getFullYear();
+const letra=numLetras[d]||d;
+const fechaAuto=`${letra.charAt(0).toUpperCase()+letra.slice(1)} (${d}) de ${months[mo]} de ${y}`;
+const defaultText=`Completó con éxito el proceso de Inducción / Reinducción en los siguientes temas: Reglamento Interno de Trabajo, Política de Seguridad y Salud en el Trabajo, Manejo de Residuos Sólidos, Política de Calidad, entre otros. Fecha de emisión: ${fechaAuto}`;
+
+document.getElementById('c-fecha-inline').textContent=fechaAuto;
+document.getElementById('f-cuerpo').placeholder=defaultText;
+
+const simple={'f-f1n':'c-f1n','f-f2n':'c-f2n'};
+
+function update(id){
+  const el=document.getElementById(id);
+  const val=el.value.trim();
+  if(id==='f-cuerpo'){
+    document.getElementById('c-cuerpo').textContent=val||defaultText;
+    return;
+  }
+  const t=simple[id];
+  if(t)document.getElementById(t).textContent=val||'—';
+}
+document.querySelectorAll('.controls input,.controls textarea').forEach(el=>{
+  el.addEventListener('input',()=>update(el.id));
+});
+function resetForm(){
+  document.querySelectorAll('.controls input,.controls textarea').forEach(el=>el.value='');
+  Object.keys(simple).forEach(update);
+  document.getElementById('c-cuerpo').textContent=defaultText;
+}
+const bi=document.querySelector('.bottom-info span:last-child');
+if(bi)bi.style.display='none';
+</script>
+</body>
+</html>

@@ -17,14 +17,17 @@ type Props = {
   nextLabel: string;
 };
 
-type Status = "idle" | "submitting" | "done";
+type Step = "verify" | "sign" | "done";
 
 const STORAGE_CERT = (slug: string) => `gc-mod-${slug}-cert`;
 const STORAGE_DONE = (slug: string) => `gc-mod-${slug}-completed`;
 
-function isValidCedula(raw: string) {
-  const digits = raw.replace(/\D/g, "");
-  return digits.length >= 6 && digits.length <= 12;
+function normalizeCedula(raw: string) {
+  return raw.replace(/\D/g, "");
+}
+
+function formatCedula(digits: string) {
+  return digits.replace(/\B(?=(\d{3})+(?!\d))/g, ".");
 }
 
 export function SignatureForm({
@@ -39,20 +42,22 @@ export function SignatureForm({
   const lastPointRef = useRef<{ x: number; y: number } | null>(null);
   const hasStrokeRef = useRef(false);
 
+  const [step, setStep] = useState<Step>("verify");
   const [moduleDone, setModuleDone] = useState(false);
   const [cedula, setCedula] = useState("");
-  const [fullName, setFullName] = useState("");
-  const [accept, setAccept] = useState(false);
+  const [verifiedCedula, setVerifiedCedula] = useState<string | null>(null);
+  const [verifying, setVerifying] = useState(false);
+  const [notFound, setNotFound] = useState(false);
   const [error, setError] = useState<string | null>(null);
-  const [status, setStatus] = useState<Status>("idle");
+  const [accept, setAccept] = useState(false);
+  const [submitting, setSubmitting] = useState(false);
   const [cert, setCert] = useState<{
     code: string;
     issuedAt: string;
-    name: string;
     cedula: string;
   } | null>(null);
 
-  // Read existing state on mount
+  // Mount: read existing state
   useEffect(() => {
     try {
       setModuleDone(localStorage.getItem(STORAGE_DONE(slug)) === "1");
@@ -61,19 +66,19 @@ export function SignatureForm({
         const parsed = JSON.parse(raw) as {
           code: string;
           issuedAt: string;
-          name: string;
           cedula: string;
         };
         setCert(parsed);
-        setStatus("done");
+        setStep("done");
       }
     } catch {
       /* ignore */
     }
   }, [slug]);
 
-  // Configure canvas (HiDPI + clear)
+  // Configure canvas (HiDPI) when entering sign step
   useEffect(() => {
+    if (step !== "sign") return;
     const c = canvasRef.current;
     if (!c) return;
     const ratio = window.devicePixelRatio || 1;
@@ -87,7 +92,7 @@ export function SignatureForm({
     ctx.lineJoin = "round";
     ctx.lineWidth = 2;
     ctx.strokeStyle = "#0c1f15";
-  }, []);
+  }, [step]);
 
   const getPos = (e: ReactPointerEvent<HTMLCanvasElement>) => {
     const c = canvasRef.current;
@@ -97,7 +102,6 @@ export function SignatureForm({
   };
 
   const onPointerDown = (e: ReactPointerEvent<HTMLCanvasElement>) => {
-    if (status === "done") return;
     e.preventDefault();
     drawingRef.current = true;
     lastPointRef.current = getPos(e);
@@ -132,9 +136,10 @@ export function SignatureForm({
     hasStrokeRef.current = false;
   };
 
-  const onSubmit = (e: FormEvent<HTMLFormElement>) => {
+  const onVerify = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     setError(null);
+    setNotFound(false);
 
     if (!moduleDone) {
       setError(
@@ -142,12 +147,50 @@ export function SignatureForm({
       );
       return;
     }
-    if (fullName.trim().length < 5) {
-      setError("Escribe tu nombre completo.");
+    const digits = normalizeCedula(cedula);
+    if (digits.length < 6 || digits.length > 12) {
+      setError("Cédula inválida. Ingresa entre 6 y 12 dígitos.");
       return;
     }
-    if (!isValidCedula(cedula)) {
-      setError("Cédula inválida. Ingresa entre 6 y 12 dígitos.");
+
+    setVerifying(true);
+    try {
+      const res = await fetch("/api/empleado/verificar", {
+        method: "POST",
+        headers: { "content-type": "application/json" },
+        body: JSON.stringify({ cedula: digits }),
+      });
+      if (res.status === 429) {
+        setError(
+          "Demasiados intentos. Espera un minuto antes de volver a intentar."
+        );
+        return;
+      }
+      if (!res.ok) {
+        setError("No fue posible validar en este momento. Intenta de nuevo.");
+        return;
+      }
+      const data = (await res.json()) as { exists: boolean };
+      if (!data.exists) {
+        setNotFound(true);
+        return;
+      }
+      setVerifiedCedula(digits);
+      setStep("sign");
+    } catch {
+      setError("Error de red. Verifica tu conexión e intenta de nuevo.");
+    } finally {
+      setVerifying(false);
+    }
+  };
+
+  const onSign = (e: FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    setError(null);
+
+    if (!verifiedCedula) {
+      setError("Sesión expirada. Vuelve a validar tu cédula.");
+      setStep("verify");
       return;
     }
     if (!hasStrokeRef.current) {
@@ -159,17 +202,16 @@ export function SignatureForm({
       return;
     }
 
-    setStatus("submitting");
+    setSubmitting(true);
 
     const issuedAt = new Date().toISOString();
-    const code = `GC-${moduleNum}-${cedula
-      .replace(/\D/g, "")
-      .slice(-6)}-${issuedAt.slice(2, 10).replace(/-/g, "")}`;
+    const code = `GC-${moduleNum}-${verifiedCedula.slice(
+      -6
+    )}-${issuedAt.slice(2, 10).replace(/-/g, "")}`;
     const payload = {
       code,
       issuedAt,
-      name: fullName.trim(),
-      cedula: cedula.replace(/\D/g, ""),
+      cedula: verifiedCedula,
     };
 
     try {
@@ -179,10 +221,12 @@ export function SignatureForm({
     }
 
     setCert(payload);
-    setStatus("done");
+    setStep("done");
+    setSubmitting(false);
   };
 
-  if (status === "done" && cert) {
+  // ------- DONE -------
+  if (step === "done" && cert) {
     return (
       <div className="sign-card sign-success">
         <div className="sign-success-icon" aria-hidden="true">
@@ -205,12 +249,8 @@ export function SignatureForm({
 
         <dl className="sign-cert">
           <div>
-            <dt>A nombre de</dt>
-            <dd>{cert.name}</dd>
-          </div>
-          <div>
             <dt>Cédula</dt>
-            <dd>{cert.cedula}</dd>
+            <dd>{formatCedula(cert.cedula)}</dd>
           </div>
           <div>
             <dt>Código</dt>
@@ -239,38 +279,107 @@ export function SignatureForm({
     );
   }
 
+  // ------- SIGN -------
+  if (step === "sign") {
+    return (
+      <form className="sign-card" onSubmit={onSign} noValidate>
+        <div className="eyebrow" style={{ marginBottom: 8 }}>
+          Paso 2 · Firma
+        </div>
+        <h2 className="sign-title">Firma para emitir tu certificado</h2>
+        <p className="sign-sub">
+          Cédula validada:{" "}
+          <strong>{formatCedula(verifiedCedula ?? "")}</strong>
+          {". "}
+          Firma en el recuadro para registrar el módulo {moduleNum} ·{" "}
+          {moduleTitle}.
+        </p>
+
+        <div className="sign-field">
+          <div className="sign-pad-head">
+            <label htmlFor="sf-pad">Firma</label>
+            <button
+              type="button"
+              className="sign-clear"
+              onClick={clearSignature}
+            >
+              Limpiar
+            </button>
+          </div>
+          <canvas
+            id="sf-pad"
+            ref={canvasRef}
+            className="sign-pad"
+            onPointerDown={onPointerDown}
+            onPointerMove={onPointerMove}
+            onPointerUp={onPointerUp}
+            onPointerLeave={onPointerUp}
+          />
+          <p className="sign-hint">Firma con el mouse o con el dedo.</p>
+        </div>
+
+        <label className="sign-check">
+          <input
+            type="checkbox"
+            checked={accept}
+            onChange={(e) => setAccept(e.target.checked)}
+          />
+          <span>
+            Declaro que vi el contenido completo del módulo y que la cédula
+            ingresada me corresponde.
+          </span>
+        </label>
+
+        {error && (
+          <div className="sign-error" role="alert">
+            {error}
+          </div>
+        )}
+
+        <div className="sign-actions">
+          <button
+            type="submit"
+            className="btn btn-primary"
+            disabled={submitting}
+          >
+            Emitir certificado{" "}
+            <span className="btn-arrow" aria-hidden="true" />
+          </button>
+          <button
+            type="button"
+            className="btn btn-ghost"
+            onClick={() => {
+              setStep("verify");
+              setVerifiedCedula(null);
+              setAccept(false);
+              hasStrokeRef.current = false;
+            }}
+          >
+            Cambiar cédula
+          </button>
+        </div>
+      </form>
+    );
+  }
+
+  // ------- VERIFY -------
   return (
-    <form className="sign-card" onSubmit={onSubmit} noValidate>
+    <form className="sign-card" onSubmit={onVerify} noValidate>
       <div className="eyebrow" style={{ marginBottom: 8 }}>
-        Validación y firma
+        Paso 1 · Validación
       </div>
-      <h2 className="sign-title">
-        Confirma tu identidad y firma para emitir tu certificado
-      </h2>
+      <h2 className="sign-title">Confirma tu cédula para continuar</h2>
       <p className="sign-sub">
-        Esta firma deja registro de que viste el módulo {moduleNum} ·{" "}
-        {moduleTitle}. Tus datos no se comparten por fuera de Guaicaramo.
+        Verificamos que estés registrado como colaborador antes de habilitar
+        la firma del módulo {moduleNum} · {moduleTitle}.
       </p>
 
       {!moduleDone && (
         <div className="sign-warn" role="status">
           Aún no has completado el video del módulo. Vuelve y míralo
-          completo antes de firmar.
+          completo antes de validar.
         </div>
       )}
-
-      <div className="sign-field">
-        <label htmlFor="sf-name">Nombre completo</label>
-        <input
-          id="sf-name"
-          type="text"
-          autoComplete="name"
-          value={fullName}
-          onChange={(e) => setFullName(e.target.value)}
-          placeholder="Como aparece en tu cédula"
-          required
-        />
-      </div>
 
       <div className="sign-field">
         <label htmlFor="sf-ced">Cédula de ciudadanía</label>
@@ -280,48 +389,24 @@ export function SignatureForm({
           inputMode="numeric"
           autoComplete="off"
           value={cedula}
-          onChange={(e) =>
-            setCedula(e.target.value.replace(/[^\d.]/g, ""))
-          }
+          onChange={(e) => {
+            setCedula(e.target.value.replace(/[^\d.]/g, ""));
+            setNotFound(false);
+            setError(null);
+          }}
           placeholder="Solo números"
           required
         />
       </div>
 
-      <div className="sign-field">
-        <div className="sign-pad-head">
-          <label htmlFor="sf-pad">Firma</label>
-          <button
-            type="button"
-            className="sign-clear"
-            onClick={clearSignature}
-          >
-            Limpiar
-          </button>
+      {notFound && (
+        <div className="sign-error sign-error-strong" role="alert">
+          <strong>No te encontramos en la base de colaboradores.</strong>
+          <br />
+          Por favor acércate al área de <em>Gestión Humana</em> para que te
+          ayuden a resolver tu caso.
         </div>
-        <canvas
-          id="sf-pad"
-          ref={canvasRef}
-          className="sign-pad"
-          onPointerDown={onPointerDown}
-          onPointerMove={onPointerMove}
-          onPointerUp={onPointerUp}
-          onPointerLeave={onPointerUp}
-        />
-        <p className="sign-hint">Firma con el mouse o con el dedo.</p>
-      </div>
-
-      <label className="sign-check">
-        <input
-          type="checkbox"
-          checked={accept}
-          onChange={(e) => setAccept(e.target.checked)}
-        />
-        <span>
-          Declaro que vi el contenido completo del módulo y que la
-          información ingresada es verdadera.
-        </span>
-      </label>
+      )}
 
       {error && (
         <div className="sign-error" role="alert">
@@ -333,9 +418,9 @@ export function SignatureForm({
         <button
           type="submit"
           className="btn btn-primary"
-          disabled={status === "submitting"}
+          disabled={verifying || !moduleDone}
         >
-          Emitir certificado{" "}
+          {verifying ? "Validando…" : "Validar cédula"}{" "}
           <span className="btn-arrow" aria-hidden="true" />
         </button>
         <Link href={`/modulos/${slug}`} className="btn btn-ghost">
