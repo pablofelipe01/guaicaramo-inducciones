@@ -353,10 +353,12 @@ export const MODULES: Module[] = [
     blurb:
       "Conoce quiénes somos, de dónde venimos y qué nos hace únicos. Esta es la puerta de entrada a la casa Guaicaramo.",
     topics: [
-      "Historia y origen de Guaicaramo",
-      "Nuestros 6 pilares",
-      "El propósito que nos une",
-      "Cómo medimos lo que importa",
+      "Generalidades",
+      "Misión y Visión",
+      "Principales procesos",
+      "Valores Corporativos / Código de Ética y Conducta",
+      "RIT (Reglamento Interno de Trabajo)",
+      "Sagrilaft y Protección de datos personales",
     ],
     objective:
       "Comprender el propósito de Guaicaramo y los seis pilares que sostienen cada decisión.",
@@ -373,10 +375,10 @@ export const MODULES: Module[] = [
     blurb:
       "Cuidar a la gente es cuidar a Guaicaramo. Aquí aprendes nuestras prácticas de convivencia, equidad y desarrollo humano.",
     topics: [
-      "Política de bienestar y convivencia",
-      "Equidad y diversidad",
-      "Programas para colaboradores y familia",
-      "Relación con comunidades vecinas",
+      "Política de Derechos / Comité de Género",
+      "Comité de Bienestar y empoderamiento de la mujer",
+      "Canales de comunicación · Mecanismo de RPQRD",
+      "Beneficios pacto colectivo / Fondo de empleados",
     ],
     objective:
       "Apropiar las prácticas de cuidado humano y comunitario que vivimos a diario.",

@@ -19,6 +19,7 @@ export function ModulePlayer({
   nextLabel,
 }: Props) {
   const videoRef = useRef<HTMLVideoElement | null>(null);
+  const maxWatchedRef = useRef(0);
   const [progress, setProgress] = useState(0);
   const [completed, setCompleted] = useState(false);
 
@@ -27,6 +28,7 @@ export function ModulePlayer({
       if (localStorage.getItem(`gc-mod-${slug}-completed`) === "1") {
         setCompleted(true);
         setProgress(1);
+        maxWatchedRef.current = Number.POSITIVE_INFINITY;
       }
     } catch {
       /* ignore */
@@ -36,12 +38,28 @@ export function ModulePlayer({
   useEffect(() => {
     const v = videoRef.current;
     if (!v) return;
+    const SEEK_TOLERANCE = 0.75; // max delta accepted as continuous playback
+    let lastTime = v.currentTime;
     const onTime = () => {
-      if (v.duration > 0) setProgress(v.currentTime / v.duration);
+      const t = v.currentTime;
+      // Only advance the watched marker on continuous playback (small forward delta).
+      if (t > lastTime && t - lastTime <= SEEK_TOLERANCE) {
+        if (t > maxWatchedRef.current) maxWatchedRef.current = t;
+      }
+      lastTime = t;
+      if (v.duration > 0) setProgress(t / v.duration);
+    };
+    const clampSeek = () => {
+      // Allow seeking backward freely; block seeking past the furthest watched point.
+      if (v.currentTime > maxWatchedRef.current + SEEK_TOLERANCE) {
+        v.currentTime = maxWatchedRef.current;
+        lastTime = maxWatchedRef.current;
+      }
     };
     const onEnd = () => {
       setCompleted(true);
       setProgress(1);
+      maxWatchedRef.current = Number.POSITIVE_INFINITY;
       try {
         localStorage.setItem(`gc-mod-${slug}-completed`, "1");
       } catch {
@@ -49,9 +67,13 @@ export function ModulePlayer({
       }
     };
     v.addEventListener("timeupdate", onTime);
+    v.addEventListener("seeking", clampSeek);
+    v.addEventListener("seeked", clampSeek);
     v.addEventListener("ended", onEnd);
     return () => {
       v.removeEventListener("timeupdate", onTime);
+      v.removeEventListener("seeking", clampSeek);
+      v.removeEventListener("seeked", clampSeek);
       v.removeEventListener("ended", onEnd);
     };
   }, [slug]);
