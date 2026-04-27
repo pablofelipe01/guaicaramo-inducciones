@@ -298,6 +298,12 @@ export function SignatureForm({
         </p>
 
         <dl className="sign-cert">
+          {cert.nombre ? (
+            <div>
+              <dt>Nombre</dt>
+              <dd>{cert.nombre}</dd>
+            </div>
+          ) : null}
           <div>
             <dt>Cédula</dt>
             <dd>{formatCedula(cert.cedula)}</dd>
@@ -318,39 +324,12 @@ export function SignatureForm({
         </dl>
 
         <div className="sign-actions">
-          <Link
-            href={`/modulos/${slug}/certificado`}
-            className="btn btn-primary"
-          >
-            Ver mi certificado
-          </Link>
-          <Link href={nextHref} className="btn btn-ghost">
+          <Link href={nextHref} className="btn btn-primary">
             {nextLabel} <span className="btn-arrow" aria-hidden="true" />
           </Link>
           <Link href="/#modulos" className="btn btn-ghost">
             Volver a los módulos
           </Link>
-          <button
-            type="button"
-            className="btn btn-ghost"
-            onClick={() => {
-              try {
-                localStorage.removeItem(STORAGE_CERT(slug));
-              } catch {
-                /* ignore */
-              }
-              setCert(null);
-              setVerifiedCedula(null);
-              setCedula("");
-              setAccept(false);
-              setError(null);
-              setNotFound(false);
-              hasStrokeRef.current = false;
-              setStep("verify");
-            }}
-          >
-            Firmar de nuevo
-          </button>
         </div>
       </div>
     );
