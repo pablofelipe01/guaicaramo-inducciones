@@ -325,6 +325,11 @@ function AnimSistemas() {
 
 /* --------------------- module data --------------------- */
 
+export type TopicGroup = {
+  title: string;
+  items: string[];
+};
+
 export type Module = {
   slug: string;
   num: string;
@@ -337,6 +342,7 @@ export type Module = {
   span: 4 | 6;
   blurb: string;
   topics: string[];
+  topicGroups?: TopicGroup[];
   objective: string;
 };
 
@@ -375,7 +381,7 @@ export const MODULES: Module[] = [
     blurb:
       "Cuidar a la gente es cuidar a Guaicaramo. Aquí aprendes nuestras prácticas de convivencia, equidad y desarrollo humano.",
     topics: [
-      "Política de Derechos / Comité de Género",
+      "Política de Derechos · Comité de Género",
       "Comité de Bienestar y empoderamiento de la mujer",
       "Canales de comunicación · Mecanismo de RPQRD",
       "Beneficios pacto colectivo / Fondo de empleados",
@@ -386,7 +392,7 @@ export const MODULES: Module[] = [
   {
     slug: "seguridad-y-salud",
     num: "03",
-    title: "Seguridad y salud",
+    title: "Seguridad y salud en el trabajo",
     duration: "30 min",
     chip: "Cuidado",
     Anim: AnimSeguridad,
@@ -395,10 +401,56 @@ export const MODULES: Module[] = [
     blurb:
       "Cero accidentes no es una meta, es un acuerdo. Conoce los protocolos que protegen tu vida y la de tu equipo.",
     topics: [
-      "Identificación de peligros y riesgos",
-      "Elementos de protección personal",
-      "Protocolo de emergencias",
-      "Reporte de incidentes y actos inseguros",
+      "Sistema de Gestión de SST (SGSST): objetivo y alcance",
+      "Política Integral de Seguridad y Salud en el Trabajo",
+      "Prevención del consumo de alcohol, sustancias psicoactivas y medicamentos no formulados",
+      "Plan Estratégico de Seguridad Vial",
+      "Obligaciones de la ARL y de los empleadores",
+      "Responsabilidades de los trabajadores",
+      "Identificación de peligros, medidas de prevención y de control",
+      "Definiciones: peligro, riesgo, incidente, accidente de trabajo, enfermedad laboral, actos y condiciones inseguras, procedimiento para el reporte",
+      "Investigación de incidentes, accidentes de trabajo y enfermedades laborales",
+      "COPASST, Comité de Convivencia Laboral, Comité de Seguridad Vial y Comité de Emergencias",
+      "Plan de prevención, preparación y respuesta ante emergencias",
+      "Elementos de Protección Individual (EPI)",
+      "Enfermería (seguimiento a condiciones especiales)",
+      "Sala amiga de la familia lactante",
+    ],
+    topicGroups: [
+      {
+        title: "Marco del SGSST",
+        items: [
+          "Sistema de Gestión de SST (SGSST): objetivo y alcance",
+          "Política Integral de Seguridad y Salud en el Trabajo",
+          "Obligaciones de la ARL y de los empleadores",
+          "Responsabilidades de los trabajadores",
+        ],
+      },
+      {
+        title: "Prevención y control de riesgos",
+        items: [
+          "Identificación de peligros, medidas de prevención y de control",
+          "Definiciones: peligro, riesgo, incidente, accidente de trabajo, enfermedad laboral, actos y condiciones inseguras, procedimiento para el reporte",
+          "Prevención del consumo de alcohol, sustancias psicoactivas y medicamentos no formulados",
+          "Plan Estratégico de Seguridad Vial",
+        ],
+      },
+      {
+        title: "Comités, emergencias e investigación",
+        items: [
+          "COPASST, Comité de Convivencia Laboral, Comité de Seguridad Vial y Comité de Emergencias",
+          "Plan de prevención, preparación y respuesta ante emergencias",
+          "Investigación de incidentes, accidentes de trabajo y enfermedades laborales",
+        ],
+      },
+      {
+        title: "Cuidado y bienestar en operación",
+        items: [
+          "Elementos de Protección Individual (EPI)",
+          "Enfermería (seguimiento a condiciones especiales)",
+          "Sala amiga de la familia lactante",
+        ],
+      },
     ],
     objective:
       "Reconocer riesgos, aplicar controles y responder ante emergencias en la operación.",
@@ -416,10 +468,12 @@ export const MODULES: Module[] = [
     blurb:
       "Regenerar el llano es nuestra forma de producir. Aprende cómo cuidamos suelo, agua, fauna y flora todos los días.",
     topics: [
-      "Manejo de suelos y aguas",
-      "Conservación de fauna y flora nativa",
-      "Manejo integrado de residuos",
-      "Cambio climático y huella de carbono",
+      "Política y objetivo de gestión ambiental (No tala, No pesca, No quema, No caza)",
+      "Identificación de impactos ambientales y Plan de Manejo Ambiental (PGIRS, PUEAA, PUEAE, PGRMV)",
+      "AVC (Altos Valores de Conservación)",
+      "Especies RAP (raras, amenazadas o en peligro de extinción)",
+      "Manejo adecuado de residuos",
+      "Obligaciones y responsabilidades en gestión ambiental",
     ],
     objective:
       "Operar bajo prácticas que regeneran el ecosistema en cada hectárea de Guaicaramo.",
@@ -436,10 +490,8 @@ export const MODULES: Module[] = [
     blurb:
       "Lo que se mide, se mejora. Conoce las certificaciones y procesos que nos hacen únicos ante el mundo.",
     topics: [
-      "RSPO, ISCC, USDA Organic, Global GAP",
-      "Calidad e inocuidad",
-      "Auditorías internas y externas",
-      "Mejora continua",
+      "Política Integral de Calidad · Objetivos de calidad · Responsabilidades",
+      "Esquemas de certificación (RSPO, ISCC y APSColombia)",
     ],
     objective:
       "Sostener los estándares y certificaciones que acreditan nuestra excelencia.",

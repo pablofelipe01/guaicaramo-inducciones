@@ -94,16 +94,52 @@ export default async function ModulePage({
               <div className="eyebrow" style={{ marginBottom: 14 }}>
                 Lo que verás
               </div>
-              <ol className="mp-topics">
-                {m.topics.map((t, i) => (
-                  <li key={i}>
-                    <span className="mp-topic-num">
-                      {String(i + 1).padStart(2, "0")}
-                    </span>
-                    <span className="mp-topic-txt">{t}</span>
-                  </li>
-                ))}
-              </ol>
+              {m.topicGroups && m.topicGroups.length > 0 ? (
+                <div className="mp-topic-groups">
+                  {m.topicGroups.map((g, gi) => (
+                    <details
+                      key={gi}
+                      className="mp-topic-group"
+                      open={gi === 0}
+                    >
+                      <summary>
+                        <span className="mp-topic-group-num">
+                          {String(gi + 1).padStart(2, "0")}
+                        </span>
+                        <span className="mp-topic-group-title">
+                          {g.title}
+                        </span>
+                        <span
+                          className="mp-topic-group-count"
+                          aria-hidden="true"
+                        >
+                          {g.items.length}
+                        </span>
+                        <span
+                          className="mp-topic-group-chev"
+                          aria-hidden="true"
+                        />
+                      </summary>
+                      <ul className="mp-topic-group-list">
+                        {g.items.map((t, i) => (
+                          <li key={i}>{t}</li>
+                        ))}
+                      </ul>
+                    </details>
+                  ))}
+                </div>
+              ) : (
+                <ol className="mp-topics">
+                  {m.topics.map((t, i) => (
+                    <li key={i}>
+                      <span className="mp-topic-num">
+                        {String(i + 1).padStart(2, "0")}
+                      </span>
+                      <span className="mp-topic-txt">{t}</span>
+                    </li>
+                  ))}
+                </ol>
+              )}
 
               <div className="mp-objective">
                 <div className="eyebrow" style={{ marginBottom: 10 }}>
