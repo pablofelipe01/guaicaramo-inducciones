@@ -333,7 +333,11 @@ export type Module = {
   chip: string;
   Anim: ComponentType;
   bg: string;
+  bgPosition?: string;
   span: 4 | 6;
+  blurb: string;
+  topics: string[];
+  objective: string;
 };
 
 export const MODULES: Module[] = [
@@ -344,8 +348,18 @@ export const MODULES: Module[] = [
     duration: "10 min",
     chip: "Propósito",
     Anim: AnimIntro,
-    bg: "https://images.unsplash.com/photo-1464822759023-fed622ff2c3b?auto=format&fit=crop&w=1600&q=80",
+    bg: "/vlcsnap-2026-04-27-09h11m19s291.png",
     span: 6,
+    blurb:
+      "Conoce quiénes somos, de dónde venimos y qué nos hace únicos. Esta es la puerta de entrada a la casa Guaicaramo.",
+    topics: [
+      "Historia y origen de Guaicaramo",
+      "Nuestros 6 pilares",
+      "El propósito que nos une",
+      "Cómo medimos lo que importa",
+    ],
+    objective:
+      "Comprender el propósito de Guaicaramo y los seis pilares que sostienen cada decisión.",
   },
   {
     slug: "bienestar-social",
@@ -354,8 +368,18 @@ export const MODULES: Module[] = [
     duration: "20 min",
     chip: "Comunidad",
     Anim: AnimBienestar,
-    bg: "https://images.unsplash.com/photo-1529333166437-7750a6dd5a70?auto=format&fit=crop&w=1600&q=80",
+    bg: "/vlcsnap-2026-04-27-09h01m37s620.png",
     span: 6,
+    blurb:
+      "Cuidar a la gente es cuidar a Guaicaramo. Aquí aprendes nuestras prácticas de convivencia, equidad y desarrollo humano.",
+    topics: [
+      "Política de bienestar y convivencia",
+      "Equidad y diversidad",
+      "Programas para colaboradores y familia",
+      "Relación con comunidades vecinas",
+    ],
+    objective:
+      "Apropiar las prácticas de cuidado humano y comunitario que vivimos a diario.",
   },
   {
     slug: "seguridad-y-salud",
@@ -366,6 +390,16 @@ export const MODULES: Module[] = [
     Anim: AnimSeguridad,
     bg: "/vlcsnap-2026-04-27-07h37m20s775.png",
     span: 4,
+    blurb:
+      "Cero accidentes no es una meta, es un acuerdo. Conoce los protocolos que protegen tu vida y la de tu equipo.",
+    topics: [
+      "Identificación de peligros y riesgos",
+      "Elementos de protección personal",
+      "Protocolo de emergencias",
+      "Reporte de incidentes y actos inseguros",
+    ],
+    objective:
+      "Reconocer riesgos, aplicar controles y responder ante emergencias en la operación.",
   },
   {
     slug: "gestion-ambiental",
@@ -374,8 +408,19 @@ export const MODULES: Module[] = [
     duration: "20 min",
     chip: "Ecosistema",
     Anim: AnimAmbiental,
-    bg: "https://images.unsplash.com/photo-1470071459604-3b5ec3a7fe05?auto=format&fit=crop&w=1600&q=80",
+    bg: "/vlcsnap-2026-04-27-08h54m14s158.png",
+    bgPosition: "30% center",
     span: 4,
+    blurb:
+      "Regenerar el llano es nuestra forma de producir. Aprende cómo cuidamos suelo, agua, fauna y flora todos los días.",
+    topics: [
+      "Manejo de suelos y aguas",
+      "Conservación de fauna y flora nativa",
+      "Manejo integrado de residuos",
+      "Cambio climático y huella de carbono",
+    ],
+    objective:
+      "Operar bajo prácticas que regeneran el ecosistema en cada hectárea de Guaicaramo.",
   },
   {
     slug: "sistemas-integrados-de-gestion",
@@ -384,8 +429,18 @@ export const MODULES: Module[] = [
     duration: "20 min",
     chip: "Excelencia",
     Anim: AnimSistemas,
-    bg: "https://images.unsplash.com/photo-1625246333195-78d9c38ad449?auto=format&fit=crop&w=1600&q=80",
+    bg: "/vlcsnap-2026-04-27-09h08m26s999.png",
     span: 4,
+    blurb:
+      "Lo que se mide, se mejora. Conoce las certificaciones y procesos que nos hacen únicos ante el mundo.",
+    topics: [
+      "RSPO, ISCC, USDA Organic, Global GAP",
+      "Calidad e inocuidad",
+      "Auditorías internas y externas",
+      "Mejora continua",
+    ],
+    objective:
+      "Sostener los estándares y certificaciones que acreditan nuestra excelencia.",
   },
 ];
 
@@ -399,7 +454,10 @@ function ModuleCard({ m }: { m: Module }) {
     >
       <div
         className="mcard-bg"
-        style={{ backgroundImage: `url(${m.bg})` }}
+        style={{
+          backgroundImage: `url(${m.bg})`,
+          backgroundPosition: m.bgPosition ?? "center",
+        }}
         aria-hidden="true"
       />
       <div className="mcard-scrim" aria-hidden="true" />

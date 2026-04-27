@@ -5,6 +5,7 @@ import type { Metadata } from "next";
 import { Header } from "@/components/landing/Header";
 import { Footer } from "@/components/landing/Footer";
 import { MODULES } from "@/components/landing/ModulesSection";
+import { ModulePlayer } from "@/components/modulo/ModulePlayer";
 
 const VIDEO_URL =
   "https://pub-8559129b6d5e44218087988775476431.r2.dev/videoplayback.mp4";
@@ -25,7 +26,7 @@ export async function generateMetadata({
   if (!m) return {};
   return {
     title: `${m.num} · ${m.title} · Guaicaramo`,
-    description: `Módulo ${m.num} de la inducción Guaicaramo · ${m.title} (${m.duration}).`,
+    description: m.blurb,
   };
 }
 
@@ -39,57 +40,93 @@ export default async function ModulePage({
   if (idx === -1) notFound();
   const m = MODULES[idx];
   const next = MODULES[idx + 1];
+  const nextHref = next ? `/modulos/${next.slug}` : "/#modulos";
+  const nextLabel = next
+    ? `Continuar al módulo ${next.num}`
+    : "Finalizar inducción";
 
   return (
     <>
-      <Header />
-      <main className="module-page">
-        <div className="wrap module-page-inner">
-          <Link href="/#modulos" className="module-back">
-            <span className="module-back-arr" aria-hidden="true" />
-            Volver a los módulos
-          </Link>
+      <Header showNav={false} />
 
-          <header className="module-head">
-            <div className="module-eyebrow">
-              <span className="chip">{m.chip}</span>
-              <span className="module-dur">⏱ {m.duration}</span>
-            </div>
-            <div className="module-titlewrap">
-              <span className="module-num">{m.num}</span>
-              <h1 className="module-title">{m.title}</h1>
-            </div>
-          </header>
+      <header className="mp-hero">
+        <div
+          className="mp-hero-bg"
+          style={{
+            backgroundImage: `url(${m.bg})`,
+            backgroundPosition: m.bgPosition ?? "center",
+          }}
+          aria-hidden="true"
+        />
+        <div className="mp-hero-scrim" aria-hidden="true" />
 
-          <div className="module-video-wrap">
-            <video
-              className="module-video"
-              src={VIDEO_URL}
-              controls
-              playsInline
-              preload="metadata"
+        <div className="wrap mp-hero-content">
+          <nav className="mp-crumbs" aria-label="Migajas de pan">
+            <ol>
+              <li>
+                <Link href="/#modulos">Módulos</Link>
+              </li>
+              <li aria-hidden="true" className="mp-crumb-sep">
+                /
+              </li>
+              <li>
+                <span className="mp-crumb-current">
+                  Módulo {m.num} · {m.title}
+                </span>
+              </li>
+              <li aria-hidden="true" className="mp-crumb-sep">
+                /
+              </li>
+              <li>
+                <span className="mp-crumb-next">
+                  Validar cédula y firmar
+                </span>
+              </li>
+            </ol>
+          </nav>
+
+          <h1 className="mp-title">{m.title}</h1>
+          <p className="mp-blurb">{m.blurb}</p>
+        </div>
+      </header>
+
+      <section className="section paper grain mp-body">
+        <div className="wrap">
+          <div className="mp-grid">
+            <aside className="mp-side">
+              <div className="eyebrow" style={{ marginBottom: 14 }}>
+                Lo que verás
+              </div>
+              <ol className="mp-topics">
+                {m.topics.map((t, i) => (
+                  <li key={i}>
+                    <span className="mp-topic-num">
+                      {String(i + 1).padStart(2, "0")}
+                    </span>
+                    <span className="mp-topic-txt">{t}</span>
+                  </li>
+                ))}
+              </ol>
+
+              <div className="mp-objective">
+                <div className="eyebrow" style={{ marginBottom: 10 }}>
+                  Objetivo
+                </div>
+                <p>{m.objective}</p>
+              </div>
+            </aside>
+
+            <ModulePlayer
+              slug={m.slug}
+              videoSrc={VIDEO_URL}
               poster={m.bg}
+              nextHref={nextHref}
+              nextLabel={nextLabel}
             />
           </div>
-
-          <div className="module-actions">
-            {next ? (
-              <Link
-                href={`/modulos/${next.slug}`}
-                className="module-cta"
-              >
-                Continuar al módulo {next.num} · {next.title}
-                <span className="module-cta-arr" aria-hidden="true" />
-              </Link>
-            ) : (
-              <Link href="/#modulos" className="module-cta">
-                Finalizar inducción
-                <span className="module-cta-arr" aria-hidden="true" />
-              </Link>
-            )}
-          </div>
         </div>
-      </main>
+      </section>
+
       <Footer />
     </>
   );

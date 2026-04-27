@@ -3,14 +3,12 @@
 import { useEffect, useRef, useState } from "react";
 
 const HERO_IMAGES = [
-  // Palma africana al atardecer
-  "https://images.unsplash.com/photo-1625246333195-78d9c38ad449?auto=format&fit=crop&w=2400&q=80",
-  // Río / humedal / reflejo
-  "https://images.unsplash.com/photo-1501854140801-50d01698950b?auto=format&fit=crop&w=2400&q=80",
-  // Pastizal / ganado en el llano
-  "https://images.unsplash.com/photo-1523348837708-15d4a09cfac2?auto=format&fit=crop&w=2400&q=80",
-  // Campo y cielo abierto
-  "https://images.unsplash.com/photo-1500382017468-9049fed747ef?auto=format&fit=crop&w=2400&q=80",
+  "/vlcsnap-2026-04-27-07h56m44s394.png",
+  "/vlcsnap-2026-04-27-07h57m51s263.png",
+  "/vlcsnap-2026-04-27-07h58m01s891.png",
+  "/vlcsnap-2026-04-27-08h40m24s588.png",
+  "/vlcsnap-2026-04-27-08h51m33s426.png",
+  "/IMG_4306.JPG",
 ];
 
 function useCrossfade(length: number, intervalMs = 5200) {

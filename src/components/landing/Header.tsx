@@ -12,7 +12,7 @@ const TABS = [
 
 type CursorPos = { left: number; width: number; opacity: number };
 
-export function Header() {
+export function Header({ showNav = true }: { showNav?: boolean } = {}) {
   const [pos, setPos] = useState<CursorPos>({ left: 0, width: 0, opacity: 0 });
 
   return (
@@ -28,25 +28,27 @@ export function Header() {
         />
       </Link>
 
-      <ul
-        className="nav-pill"
-        onMouseLeave={() => setPos((p) => ({ ...p, opacity: 0 }))}
-      >
-        {TABS.map((t) => (
-          <NavTab key={t.href} href={t.href} setPos={setPos}>
-            {t.label}
-          </NavTab>
-        ))}
-        <li
-          className="nav-cursor"
-          aria-hidden="true"
-          style={{
-            left: pos.left + "px",
-            width: pos.width + "px",
-            opacity: pos.opacity,
-          }}
-        />
-      </ul>
+      {showNav && (
+        <ul
+          className="nav-pill"
+          onMouseLeave={() => setPos((p) => ({ ...p, opacity: 0 }))}
+        >
+          {TABS.map((t) => (
+            <NavTab key={t.href} href={t.href} setPos={setPos}>
+              {t.label}
+            </NavTab>
+          ))}
+          <li
+            className="nav-cursor"
+            aria-hidden="true"
+            style={{
+              left: pos.left + "px",
+              width: pos.width + "px",
+              opacity: pos.opacity,
+            }}
+          />
+        </ul>
+      )}
 
       
     </nav>
