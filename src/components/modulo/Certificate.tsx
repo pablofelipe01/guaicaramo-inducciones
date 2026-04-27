@@ -194,7 +194,7 @@ export function Certificate({ slug }: { slug: string }) {
               <div className="cert-empresa">Guaicaramo S.A.S.</div>
               <div className="cert-title">
                 {slug === "introduccion"
-                  ? "Certificado · Introducción · Inducción/Reinducción"
+                  ? "Certificado · Inducción/Reinducción"
                   : `Certificado · Módulo ${mod.num} · ${mod.title}`}
               </div>
               <div className="constar">Se hace constar que</div>
@@ -209,8 +209,7 @@ export function Certificate({ slug }: { slug: string }) {
                   {mod.num} · {mod.title}
                 </strong>{" "}
                 del proceso de Inducción / Reinducción de Guaicaramo S.A.S., en
-                los siguientes temas: {topicsLine}. Fecha de emisión:{" "}
-                <span>{fechaLarga}</span>.
+                los siguientes temas: {topicsLine}.
               </p>
 
               <div className="h-rule">

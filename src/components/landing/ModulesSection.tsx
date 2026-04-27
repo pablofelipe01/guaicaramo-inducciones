@@ -410,8 +410,8 @@ export const MODULES: Module[] = [
     duration: "20 min",
     chip: "Ecosistema",
     Anim: AnimAmbiental,
-    bg: "/vlcsnap-2026-04-27-08h54m14s158.png",
-    bgPosition: "30% center",
+    bg: "/DSC_2854.jpg",
+    bgPosition: "55% center",
     span: 4,
     blurb:
       "Regenerar el llano es nuestra forma de producir. Aprende cómo cuidamos suelo, agua, fauna y flora todos los días.",

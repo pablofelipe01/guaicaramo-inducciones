@@ -1889,13 +1889,13 @@ a.mcard {
 }
 
 .cert-empresa {
-  font-size: 13px;
-  font-weight: 700;
-  letter-spacing: 0.2em;
+  font-size: 30px;
+  font-weight: 800;
+  letter-spacing: 0.24em;
   text-transform: uppercase;
   color: #2e7d32;
   text-align: center;
-  margin-bottom: 2px;
+  margin-bottom: 10px;
 }
 .constar {
   font-size: 18px;
@@ -1926,11 +1926,12 @@ a.mcard {
   margin-bottom: 4px;
 }
 .cert-cedula {
-  font-size: 11px;
-  color: #aaa;
+  font-size: 18px;
+  font-weight: 600;
+  color: #555;
   text-align: center;
   margin-bottom: 16px;
-  letter-spacing: 0.04em;
+  letter-spacing: 0.06em;
 }
 .cert-body-text {
   font-size: 13px;

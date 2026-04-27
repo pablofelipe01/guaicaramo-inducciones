@@ -113,10 +113,10 @@ export function InduccionSection() {
         >
           <div className="eyebrow induccion-eyebrow">La casa Guaicaramo</div>
           <h2 className="induccion-headline">
-            Bienvenido <em>a casa</em>.
+            Conociendo <em>quienes somos</em>.
           </h2>
           <p className="induccion-lede">
-            Cuatro palabras cuentan quiénes somos.
+            Cuatro palabras hablan de quienes somos.
           </p>
 
           <ul className="pillars">

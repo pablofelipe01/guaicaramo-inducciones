@@ -50,6 +50,7 @@ export function SignatureForm({
   const [notFound, setNotFound] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [accept, setAccept] = useState(false);
+  const [acceptPolicy, setAcceptPolicy] = useState(false);
   const [submitting, setSubmitting] = useState(false);
   const [cert, setCert] = useState<{
     code: string;
@@ -205,6 +206,12 @@ export function SignatureForm({
       setError("Debes aceptar la declaración para continuar.");
       return;
     }
+    if (!acceptPolicy) {
+      setError(
+        "Debes autorizar el tratamiento de datos personales para continuar."
+      );
+      return;
+    }
 
     setSubmitting(true);
     try {
@@ -333,6 +340,28 @@ export function SignatureForm({
           <Link href={nextHref} className="btn btn-ghost">
             {nextLabel} <span className="btn-arrow" aria-hidden="true" />
           </Link>
+          <button
+            type="button"
+            className="btn btn-ghost"
+            onClick={() => {
+              try {
+                localStorage.removeItem(STORAGE_CERT(slug));
+              } catch {
+                /* ignore */
+              }
+              setCert(null);
+              setCedula("");
+              setVerifiedCedula(null);
+              setAccept(false);
+              setAcceptPolicy(false);
+              setError(null);
+              setNotFound(false);
+              hasStrokeRef.current = false;
+              setStep("verify");
+            }}
+          >
+            Volver a firmar
+          </button>
           <Link href="/#modulos" className="btn btn-ghost">
             Volver a los módulos
           </Link>
@@ -392,6 +421,33 @@ export function SignatureForm({
           </span>
         </label>
 
+        <label className="sign-check">
+          <input
+            type="checkbox"
+            checked={acceptPolicy}
+            onChange={(e) => setAcceptPolicy(e.target.checked)}
+          />
+          <span>
+            <strong>Política de Tratamiento de Datos Personales.</strong>{" "}
+            Autorizo de manera libre, voluntaria e informada a GUAICARAMO,
+            para realizar el tratamiento de los datos personales
+            consignados en el presente formato, con el objetivo de dar
+            cumplimiento a la legislación vigente en materia de protección
+            de datos personales, en especial a la Ley 1581 de 2012, de
+            igual forma la captura de imágenes por temas de seguridad de la
+            compañía. La Política de Tratamiento de Datos Personales de
+            GUAICARAMO se encuentra disponible para consulta en{" "}
+            <a
+              href="https://guaicaramo.com/quienes-somos/"
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              https://guaicaramo.com/quienes-somos/
+            </a>
+            .
+          </span>
+        </label>
+
         {error && (
           <div className="sign-error" role="alert">
             {error}
@@ -414,6 +470,7 @@ export function SignatureForm({
               setStep("verify");
               setVerifiedCedula(null);
               setAccept(false);
+              setAcceptPolicy(false);
               hasStrokeRef.current = false;
             }}
           >
