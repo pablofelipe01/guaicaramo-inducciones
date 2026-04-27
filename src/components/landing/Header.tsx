@@ -1,6 +1,7 @@
 "use client";
 
 import Image from "next/image";
+import Link from "next/link";
 import { useRef, useState } from "react";
 
 const TABS = [
@@ -16,7 +17,7 @@ export function Header() {
 
   return (
     <nav className="hero-nav">
-      <a href="#top" className="hero-logo" aria-label="Guaicaramo · inicio">
+      <Link href="/" className="hero-logo" aria-label="Guaicaramo · inicio">
         <Image
           src="/logo-Guaicaramo.png"
           alt="Guaicaramo"
@@ -25,7 +26,7 @@ export function Header() {
           priority
           className="hero-logo-img"
         />
-      </a>
+      </Link>
 
       <ul
         className="nav-pill"
@@ -46,6 +47,7 @@ export function Header() {
           }}
         />
       </ul>
+
       
     </nav>
   );

@@ -1,4 +1,5 @@
 import type { ComponentType } from "react";
+import Link from "next/link";
 
 /* --------------------- per-module SVG animations --------------------- */
 
@@ -324,7 +325,8 @@ function AnimSistemas() {
 
 /* --------------------- module data --------------------- */
 
-type Module = {
+export type Module = {
+  slug: string;
   num: string;
   title: string;
   duration: string;
@@ -334,8 +336,9 @@ type Module = {
   span: 4 | 6;
 };
 
-const MODULES: Module[] = [
+export const MODULES: Module[] = [
   {
+    slug: "introduccion",
     num: "01",
     title: "Introducción",
     duration: "10 min",
@@ -345,6 +348,7 @@ const MODULES: Module[] = [
     span: 6,
   },
   {
+    slug: "bienestar-social",
     num: "02",
     title: "Bienestar social",
     duration: "20 min",
@@ -354,15 +358,17 @@ const MODULES: Module[] = [
     span: 6,
   },
   {
+    slug: "seguridad-y-salud",
     num: "03",
     title: "Seguridad y salud",
     duration: "30 min",
     chip: "Cuidado",
     Anim: AnimSeguridad,
-    bg: "https://images.unsplash.com/photo-1504307651254-35680f356dfd?auto=format&fit=crop&w=1600&q=80",
+    bg: "/vlcsnap-2026-04-27-07h37m20s775.png",
     span: 4,
   },
   {
+    slug: "gestion-ambiental",
     num: "04",
     title: "Gestión ambiental",
     duration: "20 min",
@@ -372,6 +378,7 @@ const MODULES: Module[] = [
     span: 4,
   },
   {
+    slug: "sistemas-integrados-de-gestion",
     num: "05",
     title: "Sistemas Integrados de Gestión",
     duration: "20 min",
@@ -385,7 +392,11 @@ const MODULES: Module[] = [
 function ModuleCard({ m }: { m: Module }) {
   const { Anim } = m;
   return (
-    <article className={`mcard span-${m.span}`}>
+    <Link
+      href={`/modulos/${m.slug}`}
+      className={`mcard span-${m.span}`}
+      aria-label={`Iniciar módulo ${m.num} · ${m.title}`}
+    >
       <div
         className="mcard-bg"
         style={{ backgroundImage: `url(${m.bg})` }}
@@ -410,7 +421,7 @@ function ModuleCard({ m }: { m: Module }) {
           </span>
         </div>
       </div>
-    </article>
+    </Link>
   );
 }
 
