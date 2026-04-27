@@ -324,7 +324,13 @@ export function SignatureForm({
         </dl>
 
         <div className="sign-actions">
-          <Link href={nextHref} className="btn btn-primary">
+          <Link
+            href={`/modulos/${slug}/certificado`}
+            className="btn btn-primary"
+          >
+            Ver mi certificado
+          </Link>
+          <Link href={nextHref} className="btn btn-ghost">
             {nextLabel} <span className="btn-arrow" aria-hidden="true" />
           </Link>
           <Link href="/#modulos" className="btn btn-ghost">

@@ -192,10 +192,12 @@ export function Certificate({ slug }: { slug: string }) {
               </div>
 
               <div className="cert-empresa">Guaicaramo S.A.S.</div>
-              <div className="constar">Se hace constar que</div>
               <div className="cert-title">
-                Certificado · Módulo {mod.num} · {mod.title}
+                {slug === "introduccion"
+                  ? "Certificado · Introducción · Inducción/Reinducción"
+                  : `Certificado · Módulo ${mod.num} · ${mod.title}`}
               </div>
+              <div className="constar">Se hace constar que</div>
               <div className="cert-name">{nombre}</div>
               <div className="cert-cedula">
                 C.C. <span>{formatCedula(cert.cedula)}</span>

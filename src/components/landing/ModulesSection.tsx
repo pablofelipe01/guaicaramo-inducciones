@@ -370,7 +370,7 @@ export const MODULES: Module[] = [
     duration: "20 min",
     chip: "Comunidad",
     Anim: AnimBienestar,
-    bg: "/vlcsnap-2026-04-27-09h01m37s620.png",
+    bg: "/IMG_2994.JPG.jpeg",
     span: 6,
     blurb:
       "Cuidar a la gente es cuidar a Guaicaramo. Aquí aprendes nuestras prácticas de convivencia, equidad y desarrollo humano.",
