@@ -24,20 +24,25 @@ export function normalizeCedula(raw: string) {
   return raw.replace(/\D/g, "");
 }
 
+export type Empleado = { recordId: string; nombre: string };
+
 /**
- * Looks up a Personal record by cedula. Returns the Airtable record id
- * or null when not found. The employee name is intentionally NOT returned.
+ * Looks up a Personal record by cedula. Returns recordId + nombre,
+ * or null when not found.
  */
-export async function findEmpleadoRecordId(
+export async function findEmpleado(
   cedula: string
-): Promise<string | null> {
+): Promise<Empleado | null> {
   const digits = normalizeCedula(cedula);
   if (digits.length < 6 || digits.length > 12) return null;
 
   const formula = encodeURIComponent(`{Empleado}=${digits}`);
   const url = airtableUrl(
     getPersonalTableId(),
-    `?filterByFormula=${formula}&maxRecords=1&fields%5B%5D=Empleado`
+    `?filterByFormula=${formula}&maxRecords=1` +
+      `&fields%5B%5D=Empleado&fields%5B%5D=${encodeURIComponent(
+        "Nombre del empleado"
+      )}`
   );
 
   const res = await fetch(url, {
@@ -46,43 +51,60 @@ export async function findEmpleadoRecordId(
   });
   if (!res.ok) throw new Error(`Airtable lookup failed (${res.status})`);
 
-  const data = (await res.json()) as { records?: { id: string }[] };
-  return data.records && data.records.length > 0 ? data.records[0].id : null;
+  const data = (await res.json()) as {
+    records?: {
+      id: string;
+      fields: { "Nombre del empleado"?: string };
+    }[];
+  };
+  const r = data.records?.[0];
+  if (!r) return null;
+  return {
+    recordId: r.id,
+    nombre: (r.fields["Nombre del empleado"] ?? "").trim(),
+  };
+}
+
+export async function findEmpleadoRecordId(
+  cedula: string
+): Promise<string | null> {
+  return (await findEmpleado(cedula))?.recordId ?? null;
 }
 
 export async function empleadoExists(cedula: string): Promise<boolean> {
-  return (await findEmpleadoRecordId(cedula)) !== null;
+  return (await findEmpleado(cedula)) !== null;
 }
 
 export type Certificado = {
   codigo: string;
-  emitidoEn: string;
   moduloVersion: string;
   personalRecordId: string;
+  firmaCifrada?: string;
+  hashCertificado?: string;
 };
 
 /**
- * Creates a Certificado record. Returns the Airtable record id.
+ * Creates a Certificado record. EmitidoEn is filled by Airtable (createdTime).
  */
 export async function crearCertificado(
   cert: Certificado
 ): Promise<{ id: string; codigo: string; emitidoEn: string }> {
   const url = airtableUrl(getCertificadosTableId());
+  const fields: Record<string, unknown> = {
+    Codigo: cert.codigo,
+    ModuloVersion: cert.moduloVersion,
+    Personal: [cert.personalRecordId],
+  };
+  if (cert.firmaCifrada) fields["Firma Colaborador"] = cert.firmaCifrada;
+  if (cert.hashCertificado) fields.HashCertificado = cert.hashCertificado;
+
   const res = await fetch(url, {
     method: "POST",
     headers: {
       ...authHeaders(),
       "content-type": "application/json",
     },
-    body: JSON.stringify({
-      fields: {
-        Codigo: cert.codigo,
-        EmitidoEn: cert.emitidoEn,
-        ModuloVersion: cert.moduloVersion,
-        Personal: [cert.personalRecordId],
-      },
-      typecast: true,
-    }),
+    body: JSON.stringify({ fields, typecast: true }),
     cache: "no-store",
   });
 
@@ -93,11 +115,45 @@ export async function crearCertificado(
 
   const data = (await res.json()) as {
     id: string;
+    createdTime?: string;
     fields: { Codigo?: string; EmitidoEn?: string };
   };
   return {
     id: data.id,
     codigo: data.fields.Codigo ?? cert.codigo,
-    emitidoEn: data.fields.EmitidoEn ?? cert.emitidoEn,
+    emitidoEn:
+      data.fields.EmitidoEn ?? data.createdTime ?? new Date().toISOString(),
+  };
+}
+
+/**
+ * Looks up a Certificado record by Codigo. Returns the encrypted Firma blob,
+ * or null when not found / no signature stored.
+ */
+export async function findCertificadoFirma(
+  codigo: string
+): Promise<{ firmaCifrada: string; hashCertificado?: string } | null> {
+  if (!/^[A-Z0-9-]{6,40}$/i.test(codigo)) return null;
+  const formula = encodeURIComponent(`{Codigo}="${codigo}"`);
+  const url = airtableUrl(
+    getCertificadosTableId(),
+    `?filterByFormula=${formula}&maxRecords=1` +
+      `&fields%5B%5D=${encodeURIComponent("Firma Colaborador")}&fields%5B%5D=HashCertificado`
+  );
+  const res = await fetch(url, {
+    headers: authHeaders(),
+    cache: "no-store",
+  });
+  if (!res.ok) throw new Error(`Airtable lookup failed (${res.status})`);
+  const data = (await res.json()) as {
+    records?: {
+      fields: { "Firma Colaborador"?: string; HashCertificado?: string };
+    }[];
+  };
+  const r = data.records?.[0];
+  if (!r || !r.fields["Firma Colaborador"]) return null;
+  return {
+    firmaCifrada: r.fields["Firma Colaborador"],
+    hashCertificado: r.fields.HashCertificado,
   };
 }

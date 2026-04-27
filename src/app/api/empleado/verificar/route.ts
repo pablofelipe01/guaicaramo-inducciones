@@ -1,5 +1,5 @@
 import { NextResponse } from "next/server";
-import { empleadoExists } from "@/lib/airtable";
+import { findEmpleado } from "@/lib/airtable";
 
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
@@ -55,8 +55,11 @@ export async function POST(req: Request) {
   }
 
   try {
-    const exists = await empleadoExists(cedula);
-    return NextResponse.json({ exists }, { status: 200 });
+    const emp = await findEmpleado(cedula);
+    return NextResponse.json(
+      { exists: !!emp, nombre: emp?.nombre ?? null },
+      { status: 200 }
+    );
   } catch {
     return NextResponse.json(
       { error: "No fue posible validar en este momento." },

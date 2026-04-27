@@ -55,6 +55,8 @@ export function SignatureForm({
     code: string;
     issuedAt: string;
     cedula: string;
+    nombre?: string;
+    firmaPng?: string;
   } | null>(null);
 
   // Mount: read existing state
@@ -67,6 +69,8 @@ export function SignatureForm({
           code: string;
           issuedAt: string;
           cedula: string;
+          nombre?: string;
+          firmaPng?: string;
         };
         setCert(parsed);
         setStep("done");
@@ -204,6 +208,12 @@ export function SignatureForm({
 
     setSubmitting(true);
     try {
+      const firma = canvasRef.current?.toDataURL("image/png") ?? "";
+      if (!firma.startsWith("data:image/png;base64,")) {
+        setError("No se pudo capturar la firma. Intenta de nuevo.");
+        return;
+      }
+
       const res = await fetch("/api/certificado", {
         method: "POST",
         headers: { "content-type": "application/json" },
@@ -211,6 +221,7 @@ export function SignatureForm({
           cedula: verifiedCedula,
           moduloNum: moduleNum,
           moduloSlug: slug,
+          firma,
         }),
       });
 
@@ -238,11 +249,15 @@ export function SignatureForm({
       const data = (await res.json()) as {
         codigo: string;
         emitidoEn: string;
+        nombre?: string;
+        firmaPng?: string;
       };
       const payload = {
         code: data.codigo,
         issuedAt: data.emitidoEn,
         cedula: verifiedCedula,
+        nombre: data.nombre,
+        firmaPng: data.firmaPng ?? firma,
       };
 
       try {
@@ -303,7 +318,13 @@ export function SignatureForm({
         </dl>
 
         <div className="sign-actions">
-          <Link href={nextHref} className="btn btn-primary">
+          <Link
+            href={`/modulos/${slug}/certificado`}
+            className="btn btn-primary"
+          >
+            Ver mi certificado
+          </Link>
+          <Link href={nextHref} className="btn btn-ghost">
             {nextLabel} <span className="btn-arrow" aria-hidden="true" />
           </Link>
           <Link href="/#modulos" className="btn btn-ghost">

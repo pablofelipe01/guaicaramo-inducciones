@@ -1,9 +1,13 @@
 import { NextResponse } from "next/server";
 import {
   crearCertificado,
-  findEmpleadoRecordId,
+  findEmpleado,
   normalizeCedula,
 } from "@/lib/airtable";
+import { encryptString, sha256Hex } from "@/lib/crypto";
+
+const MAX_FIRMA_BYTES = 200_000; // ~200 KB raw base64 PNG
+const FIRMA_DATA_URL_RE = /^data:image\/png;base64,[A-Za-z0-9+/=]+$/;
 
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
@@ -49,6 +53,7 @@ export async function POST(req: Request) {
   const cedula = normalizeCedula(String(obj.cedula ?? ""));
   const moduloNum = String(obj.moduloNum ?? "").trim();
   const moduloSlug = String(obj.moduloSlug ?? "").trim();
+  const firma = typeof obj.firma === "string" ? obj.firma : "";
 
   if (cedula.length < 6 || cedula.length > 12) {
     return NextResponse.json({ error: "Cédula inválida" }, { status: 400 });
@@ -56,10 +61,20 @@ export async function POST(req: Request) {
   if (!/^\d{1,3}$/.test(moduloNum) || !/^[a-z0-9-]{2,60}$/.test(moduloSlug)) {
     return NextResponse.json({ error: "Módulo inválido" }, { status: 400 });
   }
+  if (
+    !firma ||
+    firma.length > MAX_FIRMA_BYTES ||
+    !FIRMA_DATA_URL_RE.test(firma)
+  ) {
+    return NextResponse.json(
+      { error: "Firma inválida o ausente." },
+      { status: 400 }
+    );
+  }
 
   try {
-    const personalRecordId = await findEmpleadoRecordId(cedula);
-    if (!personalRecordId) {
+    const empleado = await findEmpleado(cedula);
+    if (!empleado) {
       return NextResponse.json(
         { error: "No te encontramos en la base de colaboradores." },
         { status: 404 }
@@ -71,17 +86,25 @@ export async function POST(req: Request) {
       .slice(2, 10)
       .replace(/-/g, "")}`;
 
+    const firmaCifrada = encryptString(firma);
+    const hashCertificado = sha256Hex(
+      `${codigo}|${moduloNum}-${moduloSlug}|${empleado.recordId}|${firma}`
+    );
+
     const result = await crearCertificado({
       codigo,
-      emitidoEn: issuedAt,
       moduloVersion: `${moduloNum}-${moduloSlug}`,
-      personalRecordId,
+      personalRecordId: empleado.recordId,
+      firmaCifrada,
+      hashCertificado,
     });
 
     return NextResponse.json(
       {
         codigo: result.codigo,
         emitidoEn: result.emitidoEn,
+        nombre: empleado.nombre,
+        firmaPng: firma,
       },
       { status: 200 }
     );
