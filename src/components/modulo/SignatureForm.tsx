@@ -184,7 +184,7 @@ export function SignatureForm({
     }
   };
 
-  const onSign = (e: FormEvent<HTMLFormElement>) => {
+  const onSign = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     setError(null);
 
@@ -203,26 +203,61 @@ export function SignatureForm({
     }
 
     setSubmitting(true);
-
-    const issuedAt = new Date().toISOString();
-    const code = `GC-${moduleNum}-${verifiedCedula.slice(
-      -6
-    )}-${issuedAt.slice(2, 10).replace(/-/g, "")}`;
-    const payload = {
-      code,
-      issuedAt,
-      cedula: verifiedCedula,
-    };
-
     try {
-      localStorage.setItem(STORAGE_CERT(slug), JSON.stringify(payload));
-    } catch {
-      /* ignore */
-    }
+      const res = await fetch("/api/certificado", {
+        method: "POST",
+        headers: { "content-type": "application/json" },
+        body: JSON.stringify({
+          cedula: verifiedCedula,
+          moduloNum: moduleNum,
+          moduloSlug: slug,
+        }),
+      });
 
-    setCert(payload);
-    setStep("done");
-    setSubmitting(false);
+      if (res.status === 429) {
+        setError(
+          "Demasiados intentos. Espera un minuto antes de volver a intentar."
+        );
+        return;
+      }
+      if (res.status === 404) {
+        setError(
+          "Tu cédula ya no se encuentra en la base. Acércate a Gestión Humana."
+        );
+        setStep("verify");
+        setVerifiedCedula(null);
+        return;
+      }
+      if (!res.ok) {
+        setError(
+          "No fue posible registrar el certificado. Intenta de nuevo."
+        );
+        return;
+      }
+
+      const data = (await res.json()) as {
+        codigo: string;
+        emitidoEn: string;
+      };
+      const payload = {
+        code: data.codigo,
+        issuedAt: data.emitidoEn,
+        cedula: verifiedCedula,
+      };
+
+      try {
+        localStorage.setItem(STORAGE_CERT(slug), JSON.stringify(payload));
+      } catch {
+        /* ignore */
+      }
+
+      setCert(payload);
+      setStep("done");
+    } catch {
+      setError("Error de red. Verifica tu conexión e intenta de nuevo.");
+    } finally {
+      setSubmitting(false);
+    }
   };
 
   // ------- DONE -------
@@ -274,6 +309,27 @@ export function SignatureForm({
           <Link href="/#modulos" className="btn btn-ghost">
             Volver a los módulos
           </Link>
+          <button
+            type="button"
+            className="btn btn-ghost"
+            onClick={() => {
+              try {
+                localStorage.removeItem(STORAGE_CERT(slug));
+              } catch {
+                /* ignore */
+              }
+              setCert(null);
+              setVerifiedCedula(null);
+              setCedula("");
+              setAccept(false);
+              setError(null);
+              setNotFound(false);
+              hasStrokeRef.current = false;
+              setStep("verify");
+            }}
+          >
+            Firmar de nuevo
+          </button>
         </div>
       </div>
     );

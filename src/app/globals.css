@@ -823,10 +823,10 @@ a.mcard {
   background: var(--color-bg-deep);
   overflow: hidden;
   isolation: isolate;
-  min-height: 64vh;
+  min-height: 0;
   display: flex;
   flex-direction: column;
-  padding-top: 120px;
+  padding-top: 96px;
 }
 .mp-hero-bg {
   position: absolute;
@@ -861,7 +861,7 @@ a.mcard {
   display: flex;
   flex-direction: column;
   justify-content: flex-end;
-  padding: 60px 0 72px;
+  padding: 32px 0 44px;
 }
 .mp-back {
   display: inline-flex;
@@ -1160,11 +1160,10 @@ a.mcard {
 }
 @media (max-width: 768px) {
   .mp-hero {
-    padding-top: 100px;
-    min-height: 56vh;
+    padding-top: 84px;
   }
   .mp-hero-content {
-    padding: 40px 0 56px;
+    padding: 24px 0 36px;
   }
   .mp-body {
     padding: 64px 0 80px;
@@ -1180,7 +1179,27 @@ a.mcard {
 
 /* ---------- Validación + firma ---------- */
 .sign-hero {
-  min-height: 44vh;
+  min-height: 0;
+  padding-top: 96px;
+}
+.sign-hero .mp-hero-content {
+  padding: 28px 0 36px;
+}
+.sign-hero .mp-title {
+  font-size: clamp(28px, 3.4vw, 44px);
+  max-width: none;
+}
+.sign-hero .mp-blurb {
+  margin-top: 12px;
+  font-size: 14.5px;
+}
+@media (max-width: 768px) {
+  .sign-hero {
+    padding-top: 84px;
+  }
+  .sign-hero .mp-hero-content {
+    padding: 20px 0 28px;
+  }
 }
 .sign-wrap {
   max-width: 640px;
