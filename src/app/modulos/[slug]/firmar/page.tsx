@@ -82,9 +82,9 @@ export default async function SignPage({
             </ol>
           </nav>
 
-          <h1 className="mp-title">Tu certificado del módulo {m.num}</h1>
+          <h1 className="mp-title">Su certificado del módulo {m.num}</h1>
           <p className="mp-blurb">
-            Confirmamos tu identidad y registramos tu firma para emitir el
+            Confirmamos su identidad y registramos su firma para emitir el
             certificado de este módulo. Toma menos de un minuto.
           </p>
         </div>

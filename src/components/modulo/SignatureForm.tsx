@@ -148,13 +148,13 @@ export function SignatureForm({
 
     if (!moduleDone) {
       setError(
-        "Debes completar el video del módulo antes de validar y firmar."
+        "Debe completar el video del módulo antes de validar y firmar."
       );
       return;
     }
     const digits = normalizeCedula(cedula);
     if (digits.length < 6 || digits.length > 12) {
-      setError("Cédula inválida. Ingresa entre 6 y 12 dígitos.");
+      setError("Cédula inválida. Ingrese entre 6 y 12 dígitos.");
       return;
     }
 
@@ -167,12 +167,12 @@ export function SignatureForm({
       });
       if (res.status === 429) {
         setError(
-          "Demasiados intentos. Espera un minuto antes de volver a intentar."
+          "Demasiados intentos. Espere un minuto antes de volver a intentar."
         );
         return;
       }
       if (!res.ok) {
-        setError("No fue posible validar en este momento. Intenta de nuevo.");
+        setError("No fue posible validar en este momento. Intente de nuevo.");
         return;
       }
       const data = (await res.json()) as { exists: boolean };
@@ -183,7 +183,7 @@ export function SignatureForm({
       setVerifiedCedula(digits);
       setStep("sign");
     } catch {
-      setError("Error de red. Verifica tu conexión e intenta de nuevo.");
+      setError("Error de red. Verifique su conexión e intente de nuevo.");
     } finally {
       setVerifying(false);
     }
@@ -194,21 +194,21 @@ export function SignatureForm({
     setError(null);
 
     if (!verifiedCedula) {
-      setError("Sesión expirada. Vuelve a validar tu cédula.");
+      setError("Sesión expirada. Vuelva a validar su cédula.");
       setStep("verify");
       return;
     }
     if (!hasStrokeRef.current) {
-      setError("Por favor firma en el recuadro.");
+      setError("Por favor firme en el recuadro.");
       return;
     }
     if (!accept) {
-      setError("Debes aceptar la declaración para continuar.");
+      setError("Debe aceptar la declaración para continuar.");
       return;
     }
     if (!acceptPolicy) {
       setError(
-        "Debes autorizar el tratamiento de datos personales para continuar."
+        "Debe autorizar el tratamiento de datos personales para continuar."
       );
       return;
     }
@@ -217,7 +217,7 @@ export function SignatureForm({
     try {
       const firma = canvasRef.current?.toDataURL("image/png") ?? "";
       if (!firma.startsWith("data:image/png;base64,")) {
-        setError("No se pudo capturar la firma. Intenta de nuevo.");
+        setError("No se pudo capturar la firma. Intente de nuevo.");
         return;
       }
 
@@ -234,13 +234,13 @@ export function SignatureForm({
 
       if (res.status === 429) {
         setError(
-          "Demasiados intentos. Espera un minuto antes de volver a intentar."
+          "Demasiados intentos. Espere un minuto antes de volver a intentar."
         );
         return;
       }
       if (res.status === 404) {
         setError(
-          "Tu cédula ya no se encuentra en la base. Acércate a Gestión Humana."
+          "Su cédula ya no se encuentra en la base. Diríjase a Gestión Humana."
         );
         setStep("verify");
         setVerifiedCedula(null);
@@ -248,7 +248,7 @@ export function SignatureForm({
       }
       if (!res.ok) {
         setError(
-          "No fue posible registrar el certificado. Intenta de nuevo."
+          "No fue posible registrar el certificado. Intente de nuevo."
         );
         return;
       }
@@ -276,7 +276,7 @@ export function SignatureForm({
       setCert(payload);
       setStep("done");
     } catch {
-      setError("Error de red. Verifica tu conexión e intenta de nuevo.");
+      setError("Error de red. Verifique su conexión e intente de nuevo.");
     } finally {
       setSubmitting(false);
     }
@@ -300,7 +300,7 @@ export function SignatureForm({
         </div>
         <h2 className="sign-success-title">Certificado emitido</h2>
         <p className="sign-success-sub">
-          Quedó registrado tu paso por el módulo {moduleNum} ·{" "}
+          Quedó registrado su paso por el módulo {moduleNum} ·{" "}
           {moduleTitle}.
         </p>
 
@@ -377,12 +377,12 @@ export function SignatureForm({
         <div className="eyebrow" style={{ marginBottom: 8 }}>
           Paso 2 · Firma
         </div>
-        <h2 className="sign-title">Firma para emitir tu certificado</h2>
+        <h2 className="sign-title">Firme para emitir su certificado</h2>
         <p className="sign-sub">
           Cédula validada:{" "}
           <strong>{formatCedula(verifiedCedula ?? "")}</strong>
           {". "}
-          Firma en el recuadro para registrar el módulo {moduleNum} ·{" "}
+          Firme en el recuadro para registrar el módulo {moduleNum} ·{" "}
           {moduleTitle}.
         </p>
 
@@ -406,7 +406,7 @@ export function SignatureForm({
             onPointerUp={onPointerUp}
             onPointerLeave={onPointerUp}
           />
-          <p className="sign-hint">Firma con el mouse o con el dedo.</p>
+          <p className="sign-hint">Firme con el mouse o con el dedo.</p>
         </div>
 
         <label className="sign-check">
@@ -487,15 +487,15 @@ export function SignatureForm({
       <div className="eyebrow" style={{ marginBottom: 8 }}>
         Paso 1 · Validación
       </div>
-      <h2 className="sign-title">Confirma tu cédula para continuar</h2>
+      <h2 className="sign-title">Confirme su cédula para continuar</h2>
       <p className="sign-sub">
-        Verificamos que estés registrado como colaborador antes de habilitar
+        Verificamos que esté registrado como colaborador antes de habilitar
         la firma del módulo {moduleNum} · {moduleTitle}.
       </p>
 
       {!moduleDone && (
         <div className="sign-warn" role="status">
-          Aún no has completado el video del módulo. Vuelve y míralo
+          Aún no ha completado el video del módulo. Vuelva a verlo
           completo antes de validar.
         </div>
       )}
@@ -520,10 +520,10 @@ export function SignatureForm({
 
       {notFound && (
         <div className="sign-error sign-error-strong" role="alert">
-          <strong>No te encontramos en la base de colaboradores.</strong>
+          <strong>No encontramos su registro en la base de colaboradores.</strong>
           <br />
-          Por favor acércate al área de <em>Gestión Humana</em> para que te
-          ayuden a resolver tu caso.
+          Por favor diríjase al área de <em>Gestión Humana</em> para que le
+          ayuden a resolver su caso.
         </div>
       )}
 

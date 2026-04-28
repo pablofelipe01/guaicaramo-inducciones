@@ -357,7 +357,7 @@ export const MODULES: Module[] = [
     bg: "/vlcsnap-2026-04-27-09h11m19s291.png",
     span: 6,
     blurb:
-      "Conoce quiénes somos, de dónde venimos y qué nos hace únicos. Esta es la puerta de entrada a la casa Guaicaramo.",
+      "Conozca quiénes somos, de dónde venimos y qué nos hace únicos. Esta es la puerta de entrada a la casa Guaicaramo.",
     topics: [
       "Generalidades",
       "Misión y Visión",
@@ -379,7 +379,7 @@ export const MODULES: Module[] = [
     bg: "/IMG_2994.JPG.jpeg",
     span: 6,
     blurb:
-      "Cuidar a la gente es cuidar a Guaicaramo. Aquí aprendes nuestras prácticas de convivencia, equidad y desarrollo humano.",
+      "Cuidar a la gente es cuidar a Guaicaramo. Aquí conocerá nuestras prácticas de convivencia, equidad y desarrollo humano.",
     topics: [
       "Política de Derechos · Comité de Género",
       "Comité de Bienestar y empoderamiento de la mujer",
@@ -399,7 +399,7 @@ export const MODULES: Module[] = [
     bg: "/vlcsnap-2026-04-27-07h37m20s775.png",
     span: 4,
     blurb:
-      "Cero accidentes no es una meta, es un acuerdo. Conoce los protocolos que protegen tu vida y la de tu equipo.",
+      "Cero accidentes no es una meta, es un acuerdo. Conozca los protocolos que protegen su vida y la de su equipo.",
     topics: [
       "Sistema de Gestión de SST (SGSST): objetivo y alcance",
       "Política Integral de Seguridad y Salud en el Trabajo",
@@ -466,7 +466,7 @@ export const MODULES: Module[] = [
     bgPosition: "55% center",
     span: 4,
     blurb:
-      "Regenerar el llano es nuestra forma de producir. Aprende cómo cuidamos suelo, agua, fauna y flora todos los días.",
+      "Regenerar el llano es nuestra forma de producir. Aprenda cómo cuidamos suelo, agua, fauna y flora todos los días.",
     topics: [
       "Política y objetivo de gestión ambiental (No tala, No pesca, No quema, No caza)",
       "Identificación de impactos ambientales y Plan de Manejo Ambiental (PGIRS, PUEAA, PUEAE, PGRMV)",
@@ -488,7 +488,7 @@ export const MODULES: Module[] = [
     bg: "/vlcsnap-2026-04-27-09h08m26s999.png",
     span: 4,
     blurb:
-      "Lo que se mide, se mejora. Conoce las certificaciones y procesos que nos hacen únicos ante el mundo.",
+      "Lo que se mide, se mejora. Conozca las certificaciones y procesos que nos hacen únicos ante el mundo.",
     topics: [
       "Política Integral de Calidad · Objetivos de calidad · Responsabilidades",
       "Esquemas de certificación (RSPO, ISCC y APSColombia)",

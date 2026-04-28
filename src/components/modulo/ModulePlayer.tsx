@@ -144,7 +144,7 @@ export function ModulePlayer({
       </div>
 
       <div className="mp-hint">
-        El botón <em>{nextLabel}</em> se habilita cuando termines el video.
+        El botón <em>{nextLabel}</em> se habilita cuando termine el video.
       </div>
     </div>
   );

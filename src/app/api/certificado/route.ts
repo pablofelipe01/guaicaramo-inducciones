@@ -76,7 +76,7 @@ export async function POST(req: Request) {
     const empleado = await findEmpleado(cedula);
     if (!empleado) {
       return NextResponse.json(
-        { error: "No te encontramos en la base de colaboradores." },
+        { error: "No encontramos su registro en la base de colaboradores." },
         { status: 404 }
       );
     }
