@@ -376,7 +376,7 @@ export const MODULES: Module[] = [
     duration: "20 min",
     chip: "Comunidad",
     Anim: AnimBienestar,
-    bg: "/IMG_2994.JPG.jpeg",
+    bg: "/Gente%20de%20Campo.jpg.jpeg",
     span: 6,
     blurb:
       "Cuidar a la gente es cuidar a Guaicaramo. Aquí conocerá nuestras prácticas de convivencia, equidad y desarrollo humano.",
@@ -485,7 +485,7 @@ export const MODULES: Module[] = [
     duration: "20 min",
     chip: "Excelencia",
     Anim: AnimSistemas,
-    bg: "/vlcsnap-2026-04-27-09h08m26s999.png",
+    bg: "/tractomulas.jpg.jpeg",
     span: 4,
     blurb:
       "Lo que se mide, se mejora. Conozca las certificaciones y procesos que nos hacen únicos ante el mundo.",
