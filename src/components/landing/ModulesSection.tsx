@@ -372,7 +372,7 @@ export const MODULES: Module[] = [
   {
     slug: "bienestar-social",
     num: "02",
-    title: "Bienestar social",
+    title: "Bienestar integral",
     duration: "20 min",
     chip: "Comunidad",
     Anim: AnimBienestar,

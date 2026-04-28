@@ -22,7 +22,7 @@ export const MODULES_INFO: ModuleInfo[] = [
   {
     slug: "bienestar-social",
     num: "02",
-    title: "Bienestar social",
+    title: "Bienestar integral",
     topics: [
       "Política de Derechos · Comité de Género",
       "Comité de Bienestar y empoderamiento de la mujer",
