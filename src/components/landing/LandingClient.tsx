@@ -6,6 +6,7 @@ import { Header } from "./Header";
 import { Hero } from "./Hero";
 import { InduccionSection } from "./InduccionSection";
 import { ModulesSection } from "./ModulesSection";
+import { PoliticasSection } from "./PoliticasSection";
 import { Footer } from "./Footer";
 import { LoginModal } from "./LoginModal";
 
@@ -83,7 +84,10 @@ export function LandingClient() {
     setNotice(null);
     setAuthenticated(true);
     const returnTo = searchParams.get("next") ?? searchParams.get("return");
-    const dest = returnTo?.startsWith("/modulos/") ? returnTo : "/#modulos";
+    const dest =
+      returnTo?.startsWith("/modulos/") || returnTo?.startsWith("/politicas")
+        ? returnTo
+        : "/#modulos";
     // Always hard-navigate after login: this discards the Next.js client router
     // cache (which may hold a pre-login 307 redirect for /modulos/*) and drops
     // the ?login/&reason params, so the page re-renders cleanly using the fresh
@@ -97,6 +101,10 @@ export function LandingClient() {
       <Hero />
       <InduccionSection />
       <ModulesSection
+        authenticated={authenticated}
+        onRequestAuth={openLogin}
+      />
+      <PoliticasSection
         authenticated={authenticated}
         onRequestAuth={openLogin}
       />

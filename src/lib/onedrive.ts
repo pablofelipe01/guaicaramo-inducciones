@@ -110,9 +110,22 @@ export interface SubirCertificadoOptions {
   modulo: string;
   pdfBuffer: Buffer;
   empresa?: string; // "guaicaramo" (por defecto) | "tagua"
+  /** Subcarpeta dentro de la carpeta de la persona (ej. "Políticas"). */
+  subcarpeta?: string;
+  /** Por defecto certificado_modulo_{modulo}.pdf. */
+  nombreArchivo?: string;
 }
 
-export async function subirCertificado(options: SubirCertificadoOptions): Promise<void> {
+export interface CertificadoSubido {
+  /** Ruta dentro del OneDrive de ONEDRIVE_USER. */
+  ruta: string;
+  /** ID del archivo en OneDrive (Graph driveItem). */
+  id: string;
+  /** Enlace para abrirlo; solo funciona con permisos sobre esa carpeta. */
+  webUrl: string;
+}
+
+export async function subirCertificado(options: SubirCertificadoOptions): Promise<CertificadoSubido> {
   const cfg = getConfig();
   const token = await getAccessToken(cfg);
 
@@ -120,10 +133,15 @@ export async function subirCertificado(options: SubirCertificadoOptions): Promis
   const nombreCarpeta = sanitizeFolderName(options.nombrePersona);
   // Guaicaramo → Certificados/CERTIFICADOS {año}/{Nombre} (ruta original).
   // Tagua      → Certificados/TAGUA/CERTIFICADOS {año}/{Nombre}.
-  const folderPath    = options.empresa === "tagua"
+  const carpetaPersona = options.empresa === "tagua"
     ? `Certificados/TAGUA/CERTIFICADOS ${año}/${nombreCarpeta}`
     : `Certificados/CERTIFICADOS ${año}/${nombreCarpeta}`;
-  const filename      = `certificado_modulo_${options.modulo}.pdf`;
+  const folderPath    = options.subcarpeta
+    ? `${carpetaPersona}/${sanitizeFolderName(options.subcarpeta)}`
+    : carpetaPersona;
+  const filename      = options.nombreArchivo
+    ? sanitizeFolderName(options.nombreArchivo)
+    : `certificado_modulo_${options.modulo}.pdf`;
   const filePath      = `${folderPath}/${filename}`;
 
   await ensurePath(token, cfg.user, folderPath);
@@ -144,4 +162,9 @@ export async function subirCertificado(options: SubirCertificadoOptions): Promis
   }
 
   console.log(`✅ Subido: ${filePath}`);
+  const item = (await uploadRes.json().catch(() => ({}))) as {
+    id?: string;
+    webUrl?: string;
+  };
+  return { ruta: filePath, id: item.id ?? "", webUrl: item.webUrl ?? "" };
 }
