@@ -4,6 +4,7 @@ import {
   crearCertificado,
   findEmpleado,
   getCertificadosDelEmpleado,
+  marcarCertificadoSubido,
   marcarModuloCompletado,
   normalizeCedula,
 } from "@/lib/airtable";
@@ -203,6 +204,7 @@ export async function POST(req: Request) {
       }
 
       if (certPdfBuffer) {
+        let subidoAOneDrive = false;
         try {
           await subirCertificado({
             nombrePersona: empleado.nombre,
@@ -210,10 +212,30 @@ export async function POST(req: Request) {
             pdfBuffer: certPdfBuffer,
             empresa: empleado.empresa,
           });
+          subidoAOneDrive = true;
         } catch (uploadErr) {
           console.error("[/api/certificado] OneDrive upload failed:", uploadErr);
         }
 
+        // Constancia en Airtable de que el PDF quedó archivado. Solo se marca
+        // si OneDrive confirmó la subida; si falló, el checkbox queda vacío y
+        // el certificado aparece como pendiente de archivar. Un fallo aquí no
+        // afecta la emisión del certificado.
+        if (subidoAOneDrive) {
+          try {
+            const marcado = await marcarCertificadoSubido(result.id);
+            if (!marcado) {
+              console.warn(
+                "[/api/certificado] Falta AIRTABLE_FIELD_CERT_ONEDRIVE_ID: no se marcó \"Subido a OneDrive\""
+              );
+            }
+          } catch (markErr) {
+            console.error(
+              "[/api/certificado] No se pudo marcar \"Subido a OneDrive\":",
+              markErr
+            );
+          }
+        }
       }
     }
 

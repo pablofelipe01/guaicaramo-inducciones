@@ -247,6 +247,35 @@ export async function marcarModuloCompletado(
 }
 
 /**
+ * Marca el checkbox "Subido a OneDrive" del certificado. Se llama solo cuando
+ * OneDrive confirmó la subida del PDF: si la subida falla el checkbox queda
+ * vacío, y así se ve en Airtable qué certificados faltan por archivar.
+ * Devuelve false si el campo no está configurado (no interrumpe el flujo) y
+ * lanza excepción si Airtable rechaza la actualización.
+ */
+export async function marcarCertificadoSubido(
+  certRecordId: string
+): Promise<boolean> {
+  const fieldId = process.env.AIRTABLE_FIELD_CERT_ONEDRIVE_ID;
+  if (!fieldId) return false;
+
+  const res = await fetch(
+    airtableUrl(getCertificadosTableId(), `/${encodeURIComponent(certRecordId)}`),
+    {
+      method: "PATCH",
+      headers: { ...authHeaders(), "content-type": "application/json" },
+      body: JSON.stringify({ fields: { [fieldId]: true } }),
+      cache: "no-store",
+    }
+  );
+  if (!res.ok) {
+    const text = await res.text().catch(() => "");
+    throw new Error(`Airtable update failed (${res.status}): ${text}`);
+  }
+  return true;
+}
+
+/**
  * Sincroniza los 5 checkboxes de módulos del registro Personal con la lista
  * de slugs completados. Llamada en el login para hacer backfill desde Certificados.
  */
