@@ -219,6 +219,48 @@ export const POLITICAS_SEED: Omit<Politica, "activa">[] = [
     categoria: "Seguridad y salud",
     versiones: [
       {
+        version: "6",
+        vigenteDesde: "2026-11-17",
+        pdfUrl: `${DOCS}/2026/11/2177_POLITICA_INTEGRAL_DE_SEGURIDAD_Y_SALUD_EN_EL_TRABAJO_v6.pdf`,
+        // Cambios obtenidos comparando el texto de la v5 contra la v6.
+        cambios: [
+          {
+            tipo: "modificado",
+            titulo: "Identificación, valoración y control de riesgos",
+            detalle:
+              "Se unen en un solo compromiso identificar peligros, evaluar y valorar los riesgos e implementar controles y protocolos para eliminarlos o reducirlos. Antes eran dos compromisos y no se mencionaba la valoración.",
+            seccion: "1. Contenido de la política",
+            pagina: 1,
+            audioDesde: 8.4,
+          },
+          {
+            tipo: "nuevo",
+            titulo: "Mecanismos de reporte para los trabajadores",
+            detalle:
+              "Compromiso nuevo: disponer de mecanismos para que los trabajadores reporten y planteen cuestiones de seguridad y salud, incluidas condiciones inseguras, incidentes, accidentes, lesiones y enfermedades laborales.",
+            seccion: "1. Contenido de la política",
+            pagina: 1,
+            audioDesde: 18.8,
+          },
+          {
+            tipo: "modificado",
+            titulo: "Divulgación de la política",
+            detalle:
+              "El Responsable de Seguridad y Salud en el Trabajo debe garantizar que la política esté disponible también para el público y que se divulgue a los trabajadores en un lenguaje que comprendan. El texto termina al inicio de la página 2.",
+            seccion: "2. Responsabilidades",
+            pagina: 1,
+            audioDesde: 29.1,
+          },
+        ],
+        audio: {
+          src: "/audio/politicas/seguridad-y-salud-en-el-trabajo-v6.mp3",
+          duracionSeg: 42,
+          voz: "es-MX-JorgeNeural",
+          guion:
+            "Hola, equipo Guaicaramo. La Política Integral de Seguridad y Salud en el Trabajo se actualizó a la versión seis y tiene tres cambios. Cambio uno, página uno: se unen en un solo compromiso identificar peligros, evaluar y valorar los riesgos e implementar controles y protocolos para eliminarlos o reducirlos. Cambio dos, página uno: se agrega el compromiso de disponer de mecanismos para que los trabajadores reporten cuestiones de seguridad y salud, como condiciones inseguras o accidentes. Cambio tres, página uno: la política debe estar disponible también para el público y divulgarse a los trabajadores en un lenguaje que comprendan. Revise el documento completo y confirme su lectura. Gracias.",
+        },
+      },
+      {
         version: "5",
         vigenteDesde: "2025-11-07",
         pdfUrl: `${DOCS}/2026/06/2177_POLITICA_INTEGRAL_DE_SEGURIDAD_Y_SALUD_EN_EL_TRABAJO_v5.pdf`,
