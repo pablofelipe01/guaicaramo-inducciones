@@ -25,8 +25,9 @@ export async function proxy(req: NextRequest): Promise<NextResponse> {
     return NextResponse.rewrite(moved);
   }
 
-  // Auth guard for module routes
-  if (req.nextUrl.pathname.startsWith("/modulos")) {
+  // Auth guard for module and policy routes
+  const { pathname } = req.nextUrl;
+  if (pathname.startsWith("/modulos") || pathname.startsWith("/politicas")) {
     const cookieValue = req.cookies.get(COOKIE_NAME)?.value;
     const session = await readSessionCookieValue(cookieValue);
 

@@ -19,6 +19,32 @@ export interface CertHtmlData {
   hrFirmaPng?: string; // data URL — HR signature (server-side only, never sent to browser)
   empresa?: Empresa;   // marca a aplicar; por defecto "guaicaramo" (sin cambios)
   logoDataUri?: string; // data URI del logo de la empresa (incrustado en runtime para el PDF)
+  /**
+   * Certificado de lectura de una política en lugar de un módulo. Los campos
+   * modulo* y topics se ignoran. Si no llega firmaPng, en su lugar se muestra
+   * la aceptación electrónica con su fecha y hora.
+   */
+  politica?: { titulo: string; codigo: string; version: string };
+}
+
+function escapeHtml(s: string) {
+  return s
+    .replace(/&/g, "&amp;")
+    .replace(/</g, "&lt;")
+    .replace(/>/g, "&gt;")
+    .replace(/"/g, "&quot;");
+}
+
+function formatFechaHoraBogota(iso: string) {
+  return new Date(iso).toLocaleString("es-CO", {
+    day: "numeric",
+    month: "long",
+    year: "numeric",
+    hour: "2-digit",
+    minute: "2-digit",
+    hour12: false,
+    timeZone: "America/Bogota",
+  });
 }
 
 const MONTHS = [
@@ -51,7 +77,10 @@ export function generateCertHtml(data: CertHtmlData): Buffer {
   const fechaLarga = formatFechaLarga(data.issuedAt);
   // Marca (empresa). Guaicaramo usa los valores por defecto → salida idéntica.
   const brand = getBrand(data.empresa ?? "guaicaramo");
-  const certTitle  = data.moduloSlug === "introduccion"
+  const pol = data.politica;
+  const certTitle  = pol
+    ? "Certificado · Lectura de política"
+    : data.moduloSlug === "introduccion"
     ? `Certificado · ${brand.procesoTitulo}`
     : `Certificado · Módulo ${data.moduloNum} · ${data.moduloTitle}`;
   const c     = brand.colors ?? DEFAULT_COLORS;
@@ -71,7 +100,7 @@ export function generateCertHtml(data: CertHtmlData): Buffer {
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<title>Certificado – ${nombre} – Módulo ${data.moduloNum}</title>
+<title>Certificado – ${nombre} – ${pol ? `${escapeHtml(pol.codigo)} v${escapeHtml(pol.version)}` : `Módulo ${data.moduloNum}`}</title>
 <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,700;1,500&family=Inter:wght@400;600;700;800&display=swap" rel="stylesheet">
 <style>
 *{margin:0;padding:0;box-sizing:border-box;}
@@ -107,6 +136,8 @@ body{background:#f0f2f0;display:flex;justify-content:center;padding:32px 16px;fo
 .sig-line{width:80%;max-width:170px;height:1px;background:#999;}
 .sig-name{font-size:11.5px;font-weight:700;color:${c.primaryDark};text-align:center;}
 .sig-role{font-size:9.5px;color:#bbb;text-transform:uppercase;letter-spacing:0.08em;text-align:center;}
+.sig-accept{display:flex;flex-direction:column;justify-content:flex-end;align-items:center;padding-bottom:8px;font-size:11px;font-weight:700;color:${c.primary};text-transform:uppercase;letter-spacing:0.08em;text-align:center;line-height:1.6;}
+.sig-accept span{font-size:11px;font-weight:400;color:#666;text-transform:none;letter-spacing:0;}
 .bottom-info{display:flex;align-items:center;justify-content:space-between;font-size:10px;color:#bbb;letter-spacing:0.06em;border-top:1px solid #eee;padding-top:10px;margin-top:4px;gap:12px;flex-wrap:wrap;}
 .date-val{color:${c.primary};font-weight:700;font-size:11px;}
 @media print{
@@ -153,12 +184,18 @@ body{background:#f0f2f0;display:flex;justify-content:center;padding:32px 16px;fo
         <div class="cert-title">${certTitle}</div>
         <div class="cert-name">${nombre}</div>
         <div class="cert-cedula">C.C. <span>${formatCedula(data.cedula)}</span></div>
-        <p class="cert-body-text">
+        ${pol
+          ? `<p class="cert-body-text">
+          Leyó y comprendió la <strong>${escapeHtml(pol.titulo)}</strong>
+          (${escapeHtml(pol.codigo)}, versión ${escapeHtml(pol.version)}),
+          escuchó el resumen de sus cambios y se comprometió a cumplirla.
+        </p>`
+          : `<p class="cert-body-text">
           Completó con éxito el módulo
           <strong>${data.moduloNum} · ${data.moduloTitle}</strong>
           del proceso de ${brand.procesoCuerpo} ${brand.procesoLabel}, en
           los siguientes temas: ${topicsLine}.
-        </p>
+        </p>`}
         <div class="h-rule"><span></span><i></i><span></span></div>
         <div class="sig-row">
           <div class="sig-block">
@@ -170,7 +207,11 @@ body{background:#f0f2f0;display:flex;justify-content:center;padding:32px 16px;fo
             <div class="sig-role">${brand.nombre}</div>
           </div>
           <div class="sig-block">
-            ${data.firmaPng ? `<img src="${data.firmaPng}" alt="Firma del participante" class="sig-img">` : `<div class="sig-space"></div>`}
+            ${data.firmaPng
+              ? `<img src="${data.firmaPng}" alt="Firma del participante" class="sig-img">`
+              : pol
+                ? `<div class="sig-space sig-accept">Aceptación electrónica<br><span>${formatFechaHoraBogota(data.issuedAt)}</span></div>`
+                : `<div class="sig-space"></div>`}
             <div class="sig-line"></div>
             <div class="sig-name">${nombre}</div>
             <div class="sig-role">Participante</div>

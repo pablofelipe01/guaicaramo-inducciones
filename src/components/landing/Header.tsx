@@ -8,6 +8,7 @@ const TABS = [
   { label: "Inicio", href: "#top" },
   { label: "Inducción", href: "#induccion" },
   { label: "Módulos", href: "#modulos" },
+  { label: "Políticas", href: "#politicas" },
 ];
 
 type CursorPos = { left: number; width: number; opacity: number };

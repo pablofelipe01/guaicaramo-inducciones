@@ -40,6 +40,9 @@ yarn-error.log*
 *.tsbuildinfo
 next-env.d.ts
 
+# estado local del plugin autoharness de Claude Code (bloqueos y sesiones)
+/.claude/autoharness/
+
 # local airtable dumps (contienen datos personales)
 .airtable-*.json
 
